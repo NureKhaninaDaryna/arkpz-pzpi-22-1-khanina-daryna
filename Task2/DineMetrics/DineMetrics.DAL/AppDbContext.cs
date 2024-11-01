@@ -1,0 +1,44 @@
+﻿using DineMetrics.Core.Models;
+using DineMetrics.DAL.Helpers;
+using Microsoft.EntityFrameworkCore;
+
+namespace DineMetrics.DAL;
+
+public class AppDbContext : DbContext
+{
+    public DbSet<User> Users { get; set; } = null!;
+    
+    public DbSet<Admin> Admins { get; set; } = null!;
+    
+    public DbSet<Manager> Managers { get; set; } = null!;
+    
+    public DbSet<Eatery> Eateries { get; set; } = null!;
+    
+    public DbSet<Device> Devices { get; set; } = null!;
+    
+    public DbSet<TemperatureMetric> TemperatureMetrics { get; set; } = null!;
+    
+    public DbSet<CustomerMetric> CustomerMetrics { get; set; } = null!;
+    
+    public DbSet<Report> Reports { get; set; } = null!;
+    
+    public DbSet<Employee> Employees { get; set; } = null!;
+    
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlServer("data source=khanina-d;Database=DineMetricsDb;TrustServerCertificate=true;Integrated Security=True;");
+        }
+        
+        base.OnConfiguring(optionsBuilder);
+    }
+    
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Configure();
+        modelBuilder.Seed();
+        
+        base.OnModelCreating(modelBuilder);
+    }
+}
