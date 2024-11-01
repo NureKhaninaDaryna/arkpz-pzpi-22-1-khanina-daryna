@@ -17,23 +17,13 @@ namespace DineMetrics.DAL.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.3")
+                .HasAnnotation("ProductVersion", "8.0.10")
+                .HasAnnotation("Proxies:ChangeTracking", false)
+                .HasAnnotation("Proxies:CheckEquality", false)
+                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("DineMetrics.Core.Models.Admin", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateOnly>("AppointmentDate")
-                        .HasColumnType("date");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Admins");
-                });
 
             modelBuilder.Entity("DineMetrics.Core.Models.CustomerMetric", b =>
                 {
@@ -148,21 +138,6 @@ namespace DineMetrics.DAL.Migrations
                     b.ToTable("Employees");
                 });
 
-            modelBuilder.Entity("DineMetrics.Core.Models.Manager", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("EateryId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EateryId");
-
-                    b.ToTable("Managers");
-                });
-
             modelBuilder.Entity("DineMetrics.Core.Models.Report", b =>
                 {
                     b.Property<Guid>("Id")
@@ -216,6 +191,12 @@ namespace DineMetrics.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateOnly?>("AppointmentDate")
+                        .HasColumnType("date");
+
+                    b.Property<Guid?>("EateryId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -229,18 +210,19 @@ namespace DineMetrics.DAL.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("EateryId");
+
                     b.ToTable("Users");
-                });
 
-            modelBuilder.Entity("DineMetrics.Core.Models.Admin", b =>
-                {
-                    b.HasOne("DineMetrics.Core.Models.User", "User")
-                        .WithOne("Admin")
-                        .HasForeignKey("DineMetrics.Core.Models.Admin", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("6395e8b6-5845-4de5-a30f-ce497fca4e35"),
+                            AppointmentDate = new DateOnly(2022, 11, 28),
+                            Email = "admin@gmail.com",
+                            PasswordHash = "f9c355b602a10ee3e31c2f2c23acdcba3b299ddcf9607ba0d10ae9d041e8e09b",
+                            Role = 0
+                        });
                 });
 
             modelBuilder.Entity("DineMetrics.Core.Models.CustomerMetric", b =>
@@ -275,32 +257,13 @@ namespace DineMetrics.DAL.Migrations
 
             modelBuilder.Entity("DineMetrics.Core.Models.Employee", b =>
                 {
-                    b.HasOne("DineMetrics.Core.Models.Manager", "Manager")
+                    b.HasOne("DineMetrics.Core.Models.User", "Manager")
                         .WithMany("Employees")
                         .HasForeignKey("ManagerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Manager");
-                });
-
-            modelBuilder.Entity("DineMetrics.Core.Models.Manager", b =>
-                {
-                    b.HasOne("DineMetrics.Core.Models.Eatery", "Eatery")
-                        .WithMany("Managers")
-                        .HasForeignKey("EateryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DineMetrics.Core.Models.User", "User")
-                        .WithOne("Manager")
-                        .HasForeignKey("DineMetrics.Core.Models.Manager", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Eatery");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("DineMetrics.Core.Models.TemperatureMetric", b =>
@@ -322,6 +285,15 @@ namespace DineMetrics.DAL.Migrations
                     b.Navigation("Report");
                 });
 
+            modelBuilder.Entity("DineMetrics.Core.Models.User", b =>
+                {
+                    b.HasOne("DineMetrics.Core.Models.Eatery", "Eatery")
+                        .WithMany("Managers")
+                        .HasForeignKey("EateryId");
+
+                    b.Navigation("Eatery");
+                });
+
             modelBuilder.Entity("DineMetrics.Core.Models.Device", b =>
                 {
                     b.Navigation("CustomerMetrics");
@@ -336,11 +308,6 @@ namespace DineMetrics.DAL.Migrations
                     b.Navigation("Managers");
                 });
 
-            modelBuilder.Entity("DineMetrics.Core.Models.Manager", b =>
-                {
-                    b.Navigation("Employees");
-                });
-
             modelBuilder.Entity("DineMetrics.Core.Models.Report", b =>
                 {
                     b.Navigation("CustomerMetrics");
@@ -350,9 +317,7 @@ namespace DineMetrics.DAL.Migrations
 
             modelBuilder.Entity("DineMetrics.Core.Models.User", b =>
                 {
-                    b.Navigation("Admin");
-
-                    b.Navigation("Manager");
+                    b.Navigation("Employees");
                 });
 #pragma warning restore 612, 618
         }

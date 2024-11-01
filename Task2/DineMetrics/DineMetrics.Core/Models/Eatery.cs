@@ -14,6 +14,6 @@ namespace DineMetrics.Core.Models
 
         public virtual ICollection<Device> Devices { get; set; } = new List<Device>();
 
-        public virtual ICollection<Manager> Managers { get; set; } = new List<Manager>();
+        public virtual ICollection<User> Managers { get; set; } = new List<User>();
     }
 }

@@ -41,20 +41,6 @@ namespace DineMetrics.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Users",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Role = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Devices",
                 columns: table => new
                 {
@@ -76,45 +62,24 @@ namespace DineMetrics.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Admins",
+                name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    AppointmentDate = table.Column<DateOnly>(type: "date", nullable: false)
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Role = table.Column<int>(type: "int", nullable: false),
+                    AppointmentDate = table.Column<DateOnly>(type: "date", nullable: true),
+                    EateryId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Admins", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Admins_Users_Id",
-                        column: x => x.Id,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Managers",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    EateryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Managers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Managers_Eateries_EateryId",
+                        name: "FK_Users_Eateries_EateryId",
                         column: x => x.EateryId,
                         principalTable: "Eateries",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Managers_Users_Id",
-                        column: x => x.Id,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -187,12 +152,17 @@ namespace DineMetrics.DAL.Migrations
                 {
                     table.PrimaryKey("PK_Employees", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Employees_Managers_ManagerId",
+                        name: "FK_Employees_Users_ManagerId",
                         column: x => x.ManagerId,
-                        principalTable: "Managers",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "AppointmentDate", "EateryId", "Email", "PasswordHash", "Role" },
+                values: new object[] { new Guid("6395e8b6-5845-4de5-a30f-ce497fca4e35"), new DateOnly(2022, 11, 28), null, "admin@gmail.com", "f9c355b602a10ee3e31c2f2c23acdcba3b299ddcf9607ba0d10ae9d041e8e09b", 0 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_CustomerMetrics_DeviceId",
@@ -215,11 +185,6 @@ namespace DineMetrics.DAL.Migrations
                 column: "ManagerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Managers_EateryId",
-                table: "Managers",
-                column: "EateryId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_TemperatureMetrics_DeviceId",
                 table: "TemperatureMetrics",
                 column: "DeviceId");
@@ -228,14 +193,16 @@ namespace DineMetrics.DAL.Migrations
                 name: "IX_TemperatureMetrics_ReportId",
                 table: "TemperatureMetrics",
                 column: "ReportId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_EateryId",
+                table: "Users",
+                column: "EateryId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Admins");
-
             migrationBuilder.DropTable(
                 name: "CustomerMetrics");
 
@@ -246,16 +213,13 @@ namespace DineMetrics.DAL.Migrations
                 name: "TemperatureMetrics");
 
             migrationBuilder.DropTable(
-                name: "Managers");
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Devices");
 
             migrationBuilder.DropTable(
                 name: "Reports");
-
-            migrationBuilder.DropTable(
-                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Eateries");

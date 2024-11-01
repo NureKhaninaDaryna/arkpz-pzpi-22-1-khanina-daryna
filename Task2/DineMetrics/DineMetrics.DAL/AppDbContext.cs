@@ -8,10 +8,6 @@ public class AppDbContext : DbContext
 {
     public DbSet<User> Users { get; set; } = null!;
     
-    public DbSet<Admin> Admins { get; set; } = null!;
-    
-    public DbSet<Manager> Managers { get; set; } = null!;
-    
     public DbSet<Eatery> Eateries { get; set; } = null!;
     
     public DbSet<Device> Devices { get; set; } = null!;
@@ -40,7 +36,6 @@ public class AppDbContext : DbContext
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Configure();
         modelBuilder.Seed();
         
         base.OnModelCreating(modelBuilder);

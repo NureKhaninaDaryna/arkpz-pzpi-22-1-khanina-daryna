@@ -1,5 +1,7 @@
 using DeniMetrics.WebAPI.Configurations;
 using DeniMetrics.WebAPI.Middlewares;
+using DeniMetrics.WebAPI.Validators;
+using FluentValidation.AspNetCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -57,7 +59,8 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<RegisterRequestValidator>());
 
 var app = builder.Build();
 

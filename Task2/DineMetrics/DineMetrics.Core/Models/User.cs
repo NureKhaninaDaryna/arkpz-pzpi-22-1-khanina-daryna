@@ -9,9 +9,11 @@ namespace DineMetrics.Core.Models
         public string PasswordHash { get; set; } = null!;
 
         public UserRole Role { get; set; } = UserRole.Manager;
-
-        public virtual Admin? Admin { get; set; }
-
-        public virtual Manager? Manager { get; set; }
+        
+        public DateOnly? AppointmentDate { get; set; }
+        
+        public virtual ICollection<Employee>? Employees { get; set; } = new List<Employee>();
+        
+        public virtual Eatery? Eatery { get; set; }
     }
 }
