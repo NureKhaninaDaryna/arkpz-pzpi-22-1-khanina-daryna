@@ -10,10 +10,10 @@ namespace DineMetrics.Core.Models
 
         public DeviceState State { get; set; } = DeviceState.Online;
 
-        public Eatery Eatery { get; set; } = null!;
+        public virtual Eatery Eatery { get; set; } = null!;
 
-        public ICollection<CustomerMetric> CustomerMetrics { get; set; } = new List<CustomerMetric>();
+        public virtual ICollection<CustomerMetric> CustomerMetrics { get; set; } = new List<CustomerMetric>();
 
-        public ICollection<TemperatureMetric> TemperatureMetrics { get; set; } = new List<TemperatureMetric>();
+        public virtual ICollection<TemperatureMetric> TemperatureMetrics { get; set; } = new List<TemperatureMetric>();
     }
 }

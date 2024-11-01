@@ -2,9 +2,9 @@
 {
     public class Report : BaseEntity
     {
-        public ICollection<TemperatureMetric> TemperatureMetrics { get; set; } = new List<TemperatureMetric>();
+        public virtual ICollection<TemperatureMetric> TemperatureMetrics { get; set; } = new List<TemperatureMetric>();
 
-        public ICollection<CustomerMetric> CustomerMetrics { get; set; } = new List<CustomerMetric>();
+        public virtual ICollection<CustomerMetric> CustomerMetrics { get; set; } = new List<CustomerMetric>();
 
         public double AverageTemperature { get; set; }
 

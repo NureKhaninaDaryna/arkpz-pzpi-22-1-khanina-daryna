@@ -12,8 +12,8 @@ namespace DineMetrics.Core.Models
         
         public DateOnly OpeningDay { get; set; }
 
-        public ICollection<Device> Devices { get; set; } = new List<Device>();
+        public virtual ICollection<Device> Devices { get; set; } = new List<Device>();
 
-        public ICollection<Manager> Managers { get; set; } = new List<Manager>();
+        public virtual ICollection<Manager> Managers { get; set; } = new List<Manager>();
     }
 }

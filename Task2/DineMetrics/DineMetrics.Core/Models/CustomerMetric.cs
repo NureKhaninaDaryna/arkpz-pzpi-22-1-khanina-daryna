@@ -6,8 +6,8 @@
 
         public DateTime Time { get; set; }
 
-        public Device Device { get; set; } = null!;
+        public virtual Device Device { get; set; } = null!;
 
-        public Report Report { get; set; } = null!;
+        public virtual Report Report { get; set; } = null!;
     }
 }

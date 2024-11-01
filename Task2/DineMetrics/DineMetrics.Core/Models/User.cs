@@ -10,8 +10,8 @@ namespace DineMetrics.Core.Models
 
         public UserRole Role { get; set; } = UserRole.Manager;
 
-        public Admin? Admin { get; set; }
+        public virtual Admin? Admin { get; set; }
 
-        public Manager? Manager { get; set; }
+        public virtual Manager? Manager { get; set; }
     }
 }

@@ -12,6 +12,6 @@
 
         public DateOnly? WorkEnd { get; set; } 
 
-        public Manager Manager { get; set; } = null!;
+        public virtual Manager Manager { get; set; } = null!;
     }
 }
