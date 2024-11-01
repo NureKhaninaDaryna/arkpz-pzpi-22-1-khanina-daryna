@@ -15,19 +15,33 @@ public class ReportsController : BaseController
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<Report>>> GetAll()
+    public async Task<ActionResult<List<ReportDto>>> GetAll()
     {
-        return await _reportRepository.GetAllAsync();
+        var reports = await _reportRepository.GetAllAsync();
+        
+        var reportDtos = reports.Select(report => new ReportDto
+        {
+            ReportDate = report.ReportDate,
+            TotalCustomers = report.TotalCustomers,
+            AverageTemperature = report.AverageTemperature
+        }).ToList();
+        
+        return reportDtos;
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Report>> GetById(Guid id)
+    public async Task<ActionResult<ReportDto>> GetById(Guid id)
     {
         var result = await _reportRepository.GetByIdAsync(id);
 
         if (result is null)
             return BadRequest("Report not found");
         
-        return result;
+        return new ReportDto
+        {
+            ReportDate = result.ReportDate,
+            TotalCustomers = result.TotalCustomers,
+            AverageTemperature = result.AverageTemperature
+        };
     }
 }

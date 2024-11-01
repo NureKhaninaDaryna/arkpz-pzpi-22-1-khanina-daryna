@@ -19,20 +19,34 @@ public class TemperatureMetricsController : BaseController
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<TemperatureMetric>>> GetAll()
+    public async Task<ActionResult<List<TemperatureMetricDto>>> GetAll()
     {
-        return await _temperatureMetricRepository.GetAllAsync();
+        var temperatureMetrics = await _temperatureMetricRepository.GetAllAsync();
+        
+        var temperatureMetricDtos = temperatureMetrics.Select(metric => new TemperatureMetricDto
+        {
+            DeviceId = metric.Device.Id,
+            Value = metric.Value,
+            Time = metric.Time,
+        }).ToList();
+        
+        return temperatureMetricDtos;
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<TemperatureMetric>> GetById(Guid id)
+    public async Task<ActionResult<TemperatureMetricDto>> GetById(Guid id)
     {
         var result = await _temperatureMetricRepository.GetByIdAsync(id);
-        
+
         if (result is null)
             return BadRequest("TemperatureMetric not found");
         
-        return result;
+        return new TemperatureMetricDto
+        {
+            DeviceId = result.Device.Id,
+            Value = result.Value,
+            Time = result.Time,
+        };
     }
 
     [HttpPost]
@@ -58,7 +72,7 @@ public class TemperatureMetricsController : BaseController
         {
             metric.Report = todayReport.FirstOrDefault()!;
             
-            //update report
+            await UpdateReport(metric);
         }
         else
         {
@@ -94,5 +108,12 @@ public class TemperatureMetricsController : BaseController
         await _temperatureMetricRepository.RemoveByIdAsync(id);
         
         return Ok();
+    }
+    
+    private async Task UpdateReport(TemperatureMetric metric)
+    {
+        metric.Report.AverageTemperature += metric.Value;
+
+        await _reportRepository.UpdateAsync(metric.Report);
     }
 }

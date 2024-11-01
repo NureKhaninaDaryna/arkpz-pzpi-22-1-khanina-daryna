@@ -17,20 +17,40 @@ public class EmployeesController : BaseController
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<Employee>>> GetAll()
+    public async Task<ActionResult<List<EmployeeDto>>> GetAll()
     {
-        return await _employeeRepository.GetAllAsync();
+        var employees = await _employeeRepository.GetAllAsync();
+        
+        var employeeDtos = employees.Select(employee => new EmployeeDto
+        {
+            Name = employee.Name,
+            Position = employee.Position,
+            PhoneNumber = employee.PhoneNumber,
+            WorkStart = employee.WorkStart,
+            WorkEnd = employee.WorkEnd,
+            ManagerId = employee.Manager.Id
+        }).ToList();
+        
+        return employeeDtos;
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Employee>> GetById(Guid id)
+    public async Task<ActionResult<EmployeeDto>> GetById(Guid id)
     {
         var result = await _employeeRepository.GetByIdAsync(id);
 
         if (result is null)
             return BadRequest("Employee not found");
         
-        return result;
+        return new EmployeeDto
+        {
+            Name = result.Name,
+            Position = result.Position,
+            PhoneNumber = result.PhoneNumber,
+            WorkStart = result.WorkStart,
+            WorkEnd = result.WorkEnd,
+            ManagerId = result.Manager.Id 
+        };
     }
 
     [HttpPost]

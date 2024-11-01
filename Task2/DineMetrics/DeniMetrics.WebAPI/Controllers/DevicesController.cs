@@ -17,20 +17,34 @@ public class DevicesController : BaseController
     }
     
     [HttpGet]
-    public async Task<ActionResult<List<Device>>> GetAll()
+    public async Task<ActionResult<List<DeviceDto>>> GetAll()
     {
-        return await _deviceRepository.GetAllAsync();
+        var devices = await _deviceRepository.GetAllAsync();
+        
+        var devicesDtos = devices.Select(device => new DeviceDto
+        {
+            SerialNumber = device.SerialNumber,
+            Model = device.Model,
+            EateryId = device.Eatery.Id
+        }).ToList();
+
+        return devicesDtos;
     }
     
     [HttpGet("{id}")]
-    public async Task<ActionResult<Device>> GetById(Guid id)
+    public async Task<ActionResult<DeviceDto>> GetById(Guid id)
     {
         var result = await _deviceRepository.GetByIdAsync(id);
 
         if (result is null)
             return BadRequest("Device not found");
         
-        return result;
+        return new DeviceDto
+        {
+            SerialNumber = result.SerialNumber,
+            Model = result.Model,
+            EateryId = result.Eatery.Id
+        };
     }
     
     [HttpPost]

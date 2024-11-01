@@ -16,20 +16,36 @@ public class EateriesController : BaseController
     }
     
     [HttpGet]
-    public async Task<ActionResult<List<Eatery>>> GetAll()
+    public async Task<ActionResult<List<EateryDto>>> GetAll()
     {
-        return await _eateryRepository.GetAllAsync();
+        var eateries = await _eateryRepository.GetAllAsync();
+        
+        var eateriesDtos = eateries.Select(eatery => new EateryDto
+        {
+            Name = eatery.Name,
+            Address = eatery.Address,
+            Type = eatery.Type,
+            OpeningDay = eatery.OpeningDay
+        }).ToList();
+        
+        return eateriesDtos;
     }
     
     [HttpGet("{id}")]
-    public async Task<ActionResult<Eatery>> GetById(Guid id)
+    public async Task<ActionResult<EateryDto>> GetById(Guid id)
     {
         var result = await _eateryRepository.GetByIdAsync(id);
 
         if (result is null)
             return BadRequest("Eatery is not found");
         
-        return result;
+        return new EateryDto
+        {
+            Name = result.Name,
+            Address = result.Address,
+            Type = result.Type,
+            OpeningDay = result.OpeningDay
+        };
     }
     
     [HttpPost]

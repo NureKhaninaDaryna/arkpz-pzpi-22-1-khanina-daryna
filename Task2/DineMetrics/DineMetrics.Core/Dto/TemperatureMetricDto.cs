@@ -2,7 +2,7 @@
 
 public class TemperatureMetricDto
 {
-    public int Value { get; set; } 
+    public double Value { get; set; } 
 
     public DateTime Time { get; set; }
     

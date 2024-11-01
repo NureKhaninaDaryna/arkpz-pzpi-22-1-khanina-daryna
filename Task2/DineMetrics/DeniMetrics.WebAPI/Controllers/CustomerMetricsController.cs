@@ -19,20 +19,34 @@ public class CustomerMetricsController : BaseController
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<CustomerMetric>>> GetAll()
+    public async Task<ActionResult<List<CustomerMetricDto>>> GetAll()
     {
-        return await _customerMetricRepository.GetAllAsync();
+        var customerMetrics = await _customerMetricRepository.GetAllAsync();
+        
+        var customerMetricDtos = customerMetrics.Select(metric => new CustomerMetricDto
+        {
+            Count = metric.Count,
+            Time = metric.Time,
+            DeviceId = metric.Device.Id
+        }).ToList();
+
+        return customerMetricDtos;
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<CustomerMetric>> GetById(Guid id)
+    public async Task<ActionResult<CustomerMetricDto>> GetById(Guid id)
     {
         var result = await _customerMetricRepository.GetByIdAsync(id);
 
         if (result is null)
             return BadRequest("CustomerMetric not found");
         
-        return result;
+        return new CustomerMetricDto()
+        {
+            Count = result.Count,
+            Time = result.Time,
+            DeviceId = result.Device.Id
+        };
     }
 
     [HttpPost]
@@ -57,8 +71,8 @@ public class CustomerMetricsController : BaseController
         if (todayReport.Count > 0)
         {
             metric.Report = todayReport.FirstOrDefault()!;
-            
-            //update report
+
+            await UpdateReport(metric);
         }
         else
         {
@@ -94,5 +108,12 @@ public class CustomerMetricsController : BaseController
         await _customerMetricRepository.RemoveByIdAsync(id);
         
         return Ok();
+    }
+
+    private async Task UpdateReport(CustomerMetric metric)
+    {
+        metric.Report.TotalCustomers += metric.Count;
+
+        await _reportRepository.UpdateAsync(metric.Report);
     }
 }
