@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using DeniMetrics.WebAPI.Configurations;
 using DeniMetrics.WebAPI.Middlewares;
 using DeniMetrics.WebAPI.Validators;
@@ -59,7 +60,10 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-builder.Services.AddControllers()
+builder.Services.AddControllers().AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+    })
     .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<RegisterRequestValidator>())
     .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<EateryDtoValidator>());;
 
