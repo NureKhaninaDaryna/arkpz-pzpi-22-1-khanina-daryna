@@ -1,11 +1,11 @@
-﻿using DeniMetrics.WebAPI.Attributes;
+﻿using DineMetrics.Core.Dto;
 using DineMetrics.Core.Models;
 using DineMetrics.DAL.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DeniMetrics.WebAPI.Controllers;
 
-[AuthorizeAsAdmin]
+//[AuthorizeAsAdmin]
 public class EateriesController : BaseController
 {
     private readonly IRepository<Eatery> _eateryRepository;
@@ -33,8 +33,16 @@ public class EateriesController : BaseController
     }
     
     [HttpPost]
-    public async Task<ActionResult> Create([FromBody] Eatery eatery)
+    public async Task<ActionResult> Create([FromBody] EateryDto dto)
     {
+        var eatery = new Eatery()
+        {
+            Name = dto.Name,
+            Address = dto.Address,
+            Type = dto.Type,
+            OpeningDay = dto.OpeningDay
+        };
+        
         await _eateryRepository.CreateAsync(eatery);
         
         return CreatedAtAction(nameof(GetById), new { id = eatery.Id }, eatery);

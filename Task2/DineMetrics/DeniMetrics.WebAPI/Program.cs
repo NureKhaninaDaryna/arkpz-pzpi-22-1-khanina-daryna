@@ -60,7 +60,8 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.AddControllers()
-    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<RegisterRequestValidator>());
+    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<RegisterRequestValidator>())
+    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<EateryDtoValidator>());;
 
 var app = builder.Build();
 
