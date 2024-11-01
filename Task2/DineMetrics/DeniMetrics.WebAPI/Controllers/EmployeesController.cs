@@ -8,10 +8,12 @@ namespace DeniMetrics.WebAPI.Controllers;
 public class EmployeesController : BaseController
 {
     private readonly IRepository<Employee> _employeeRepository;
+    private readonly IRepository<User> _userRepository;
 
-    public EmployeesController(IRepository<Employee> employeeRepository)
+    public EmployeesController(IRepository<Employee> employeeRepository, IRepository<User> userRepository)
     {
         _employeeRepository = employeeRepository;
+        _userRepository = userRepository;
     }
 
     [HttpGet]
@@ -34,9 +36,19 @@ public class EmployeesController : BaseController
     [HttpPost]
     public async Task<ActionResult> Create([FromBody] EmployeeDto dto)
     {
+        var manager = await _userRepository.GetByIdAsync(dto.ManagerId);
+
+        if (manager is null)
+            return BadRequest("Manager not found");
+        
         var employee = new Employee
         {
-            // Map properties from dto to model
+            Name = dto.Name,
+            Position = dto.Position,
+            PhoneNumber = dto.PhoneNumber,
+            WorkStart = dto.WorkStart,
+            WorkEnd = dto.WorkEnd,
+            Manager = manager,
         };
 
         await _employeeRepository.CreateAsync(employee);

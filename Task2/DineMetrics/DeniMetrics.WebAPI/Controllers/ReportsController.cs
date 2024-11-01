@@ -30,36 +30,4 @@ public class ReportsController : BaseController
         
         return result;
     }
-
-    [HttpPost]
-    public async Task<ActionResult> Create([FromBody] ReportDto dto)
-    {
-        var report = new Report
-        {
-            // Map properties from dto to model
-        };
-
-        await _reportRepository.CreateAsync(report);
-
-        return CreatedAtAction(nameof(GetById), new { id = report.Id }, report);
-    }
-
-    [HttpPut("{id}")]
-    public async Task<ActionResult> Update(Guid id, [FromBody] Report report)
-    {
-        if (id != report.Id)
-            return BadRequest("Report ID mismatch");
-
-        await _reportRepository.UpdateAsync(report);
-        
-        return Ok();
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<ActionResult> Delete(Guid id)
-    {
-        await _reportRepository.RemoveByIdAsync(id);
-        
-        return Ok();
-    }
 }

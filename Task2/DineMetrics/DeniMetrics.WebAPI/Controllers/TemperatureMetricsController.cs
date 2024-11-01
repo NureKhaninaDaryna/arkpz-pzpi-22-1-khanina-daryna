@@ -8,10 +8,14 @@ namespace DeniMetrics.WebAPI.Controllers;
 public class TemperatureMetricsController : BaseController
 {
     private readonly IRepository<TemperatureMetric> _temperatureMetricRepository;
+    private readonly IRepository<Device> _deviceRepository;
+    private readonly IRepository<Report> _reportRepository;
 
-    public TemperatureMetricsController(IRepository<TemperatureMetric> temperatureMetricRepository)
+    public TemperatureMetricsController(IRepository<TemperatureMetric> temperatureMetricRepository, IRepository<Device> deviceRepository, IRepository<Report> reportRepository)
     {
         _temperatureMetricRepository = temperatureMetricRepository;
+        _deviceRepository = deviceRepository;
+        _reportRepository = reportRepository;
     }
 
     [HttpGet]
@@ -34,10 +38,39 @@ public class TemperatureMetricsController : BaseController
     [HttpPost]
     public async Task<ActionResult> Create([FromBody] TemperatureMetricDto dto)
     {
+        var device = await _deviceRepository.GetByIdAsync(dto.DeviceId);
+
+        if (device is null)
+            return BadRequest("Device not found");
+        
         var metric = new TemperatureMetric
         {
-            // Map properties from dto to model
+            Value = dto.Value,
+            Time = dto.Time,
+            Device = device
         };
+        
+        var currentDate = DateOnly.FromDateTime(DateTime.Now);
+
+        var todayReport = await _reportRepository.GetByPredicateAsync(r => r.ReportDate == currentDate);
+
+        if (todayReport.Count > 0)
+        {
+            metric.Report = todayReport.FirstOrDefault()!;
+            
+            //update report
+        }
+        else
+        {
+            var report = new Report()
+            {
+                ReportDate = currentDate
+            };
+
+            await _reportRepository.CreateAsync(report);
+            
+            metric.Report = report;
+        }
 
         await _temperatureMetricRepository.CreateAsync(metric);
 

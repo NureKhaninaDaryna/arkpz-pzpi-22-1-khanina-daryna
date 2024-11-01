@@ -8,10 +8,14 @@ namespace DeniMetrics.WebAPI.Controllers;
 public class CustomerMetricsController : BaseController
 {
     private readonly IRepository<CustomerMetric> _customerMetricRepository;
+    private readonly IRepository<Device> _deviceRepository;
+    private readonly IRepository<Report> _reportRepository;
 
-    public CustomerMetricsController(IRepository<CustomerMetric> customerMetricRepository)
+    public CustomerMetricsController(IRepository<CustomerMetric> customerMetricRepository, IRepository<Device> deviceRepository, IRepository<Report> reportRepository)
     {
         _customerMetricRepository = customerMetricRepository;
+        _deviceRepository = deviceRepository;
+        _reportRepository = reportRepository;
     }
 
     [HttpGet]
@@ -34,10 +38,39 @@ public class CustomerMetricsController : BaseController
     [HttpPost]
     public async Task<ActionResult> Create([FromBody] CustomerMetricDto dto)
     {
+        var device = await _deviceRepository.GetByIdAsync(dto.DeviceId);
+
+        if (device is null)
+            return BadRequest("Device not found");
+        
         var metric = new CustomerMetric
         {
-            // Map properties from dto to model
+            Count = dto.Count,
+            Time = dto.Time,
+            Device = device
         };
+        
+        var currentDate = DateOnly.FromDateTime(DateTime.Now);
+
+        var todayReport = await _reportRepository.GetByPredicateAsync(r => r.ReportDate == currentDate);
+
+        if (todayReport.Count > 0)
+        {
+            metric.Report = todayReport.FirstOrDefault()!;
+            
+            //update report
+        }
+        else
+        {
+            var report = new Report()
+            {
+                ReportDate = currentDate
+            };
+
+            await _reportRepository.CreateAsync(report);
+            
+            metric.Report = report;
+        }
 
         await _customerMetricRepository.CreateAsync(metric);
 
