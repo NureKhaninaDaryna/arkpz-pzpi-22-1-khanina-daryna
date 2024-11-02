@@ -65,7 +65,11 @@ builder.Services.AddControllers().AddJsonOptions(options =>
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
     })
     .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<RegisterRequestValidator>())
-    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<EateryDtoValidator>());;
+    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<EateryDtoValidator>())
+    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CustomerMetricDtoValidator>())
+    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<DeviceDtoValidator>())
+    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<EmployeeDtoValidator>())
+    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<TemperatureMetricDtoValidator>());
 
 var app = builder.Build();
 

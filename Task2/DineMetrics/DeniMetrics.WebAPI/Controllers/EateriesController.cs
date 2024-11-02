@@ -61,7 +61,7 @@ public class EateriesController : BaseController
         
         await _eateryRepository.CreateAsync(eatery);
         
-        return CreatedAtAction(nameof(GetById), new { id = eatery.Id }, eatery);
+        return CreatedAtAction(nameof(GetById), new { id = eatery.Id }, dto);
     }
     
     [HttpPut("{id}")]

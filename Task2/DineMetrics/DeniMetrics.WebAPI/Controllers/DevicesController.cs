@@ -64,7 +64,7 @@ public class DevicesController : BaseController
         
         await _deviceRepository.CreateAsync(device);
         
-        return CreatedAtAction(nameof(GetById), new { id = device.Id }, device);
+        return CreatedAtAction(nameof(GetById), new { id = device.Id }, dto);
     }
     
     [HttpPut("{id}")]

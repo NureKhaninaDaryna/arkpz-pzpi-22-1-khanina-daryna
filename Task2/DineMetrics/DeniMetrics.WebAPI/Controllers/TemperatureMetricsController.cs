@@ -78,6 +78,7 @@ public class TemperatureMetricsController : BaseController
         {
             var report = new Report()
             {
+                AverageTemperature = dto.Value,
                 ReportDate = currentDate
             };
 
@@ -88,7 +89,7 @@ public class TemperatureMetricsController : BaseController
 
         await _temperatureMetricRepository.CreateAsync(metric);
 
-        return CreatedAtAction(nameof(GetById), new { id = metric.Id }, metric);
+        return CreatedAtAction(nameof(GetById), new { id = metric.Id }, dto);
     }
 
     [HttpDelete("{id}")]
@@ -102,7 +103,8 @@ public class TemperatureMetricsController : BaseController
     private async Task UpdateReport(TemperatureMetric metric)
     {
         metric.Report.AverageTemperature += metric.Value;
-
+        metric.Report.AverageTemperature /= metric.Report.TemperatureMetrics.Count;
+        
         await _reportRepository.UpdateAsync(metric.Report);
     }
 }

@@ -78,6 +78,7 @@ public class CustomerMetricsController : BaseController
         {
             var report = new Report()
             {
+                TotalCustomers = dto.Count,
                 ReportDate = currentDate
             };
 
@@ -88,7 +89,7 @@ public class CustomerMetricsController : BaseController
 
         await _customerMetricRepository.CreateAsync(metric);
 
-        return CreatedAtAction(nameof(GetById), new { id = metric.Id }, metric);
+        return CreatedAtAction(nameof(GetById), new { id = metric.Id }, dto);
     }
 
     [HttpDelete("{id}")]

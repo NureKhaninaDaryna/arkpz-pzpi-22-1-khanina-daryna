@@ -73,7 +73,7 @@ public class EmployeesController : BaseController
 
         await _employeeRepository.CreateAsync(employee);
 
-        return CreatedAtAction(nameof(GetById), new { id = employee.Id }, employee);
+        return CreatedAtAction(nameof(GetById), new { id = employee.Id }, dto);
     }
 
     [HttpPut("{id}")]
