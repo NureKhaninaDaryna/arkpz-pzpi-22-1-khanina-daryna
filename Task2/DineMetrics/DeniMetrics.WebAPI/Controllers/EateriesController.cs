@@ -65,13 +65,20 @@ public class EateriesController : BaseController
     }
     
     [HttpPut("{id}")]
-    public async Task<ActionResult> Update(Guid id, [FromBody] Eatery eatery)
+    public async Task<ActionResult> Update(Guid id, [FromBody] EateryDto dto)
     {
-        if (id != eatery.Id)
-            return BadRequest("Eatery ID mismatch");
+        var existingEatery = await _eateryRepository.GetByIdAsync(id);
 
-        await _eateryRepository.UpdateAsync(eatery);
-        
+        if (existingEatery == null)
+            return BadRequest("Eatery not found");
+
+        existingEatery.Name = dto.Name;
+        existingEatery.Address = dto.Address;
+        existingEatery.Type = dto.Type;
+        existingEatery.OpeningDay = dto.OpeningDay;
+
+        await _eateryRepository.UpdateAsync(existingEatery);
+
         return Ok();
     }
 

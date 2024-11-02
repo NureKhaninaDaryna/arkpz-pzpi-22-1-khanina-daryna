@@ -91,17 +91,6 @@ public class TemperatureMetricsController : BaseController
         return CreatedAtAction(nameof(GetById), new { id = metric.Id }, metric);
     }
 
-    [HttpPut("{id}")]
-    public async Task<ActionResult> Update(Guid id, [FromBody] TemperatureMetric metric)
-    {
-        if (id != metric.Id)
-            return BadRequest("TemperatureMetric ID mismatch");
-
-        await _temperatureMetricRepository.UpdateAsync(metric);
-        
-        return Ok();
-    }
-
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(Guid id)
     {

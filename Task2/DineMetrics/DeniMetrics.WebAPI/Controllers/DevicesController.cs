@@ -68,15 +68,26 @@ public class DevicesController : BaseController
     }
     
     [HttpPut("{id}")]
-    public async Task<ActionResult> Update(Guid id, [FromBody] Device device)
+    public async Task<ActionResult> Update(Guid id, [FromBody] DeviceDto dto)
     {
-        if (id != device.Id)
-            return BadRequest("Device ID mismatch");
+        var existingDevice = await _deviceRepository.GetByIdAsync(id);
 
-        await _deviceRepository.UpdateAsync(device);
-        
+        if (existingDevice == null)
+            return BadRequest("Device not found");
+
+        var eatery = await _eateryRepository.GetByIdAsync(dto.EateryId);
+        if (eatery == null)
+            return BadRequest("Eatery not found");
+
+        existingDevice.SerialNumber = dto.SerialNumber;
+        existingDevice.Model = dto.Model;
+        existingDevice.Eatery = eatery;
+
+        await _deviceRepository.UpdateAsync(existingDevice);
+
         return Ok();
     }
+
 
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(Guid id)

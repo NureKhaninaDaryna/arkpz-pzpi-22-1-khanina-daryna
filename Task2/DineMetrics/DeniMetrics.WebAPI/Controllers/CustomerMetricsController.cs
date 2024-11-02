@@ -91,17 +91,6 @@ public class CustomerMetricsController : BaseController
         return CreatedAtAction(nameof(GetById), new { id = metric.Id }, metric);
     }
 
-    [HttpPut("{id}")]
-    public async Task<ActionResult> Update(Guid id, [FromBody] CustomerMetric metric)
-    {
-        if (id != metric.Id)
-            return BadRequest("CustomerMetric ID mismatch");
-
-        await _customerMetricRepository.UpdateAsync(metric);
-        
-        return Ok();
-    }
-
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(Guid id)
     {

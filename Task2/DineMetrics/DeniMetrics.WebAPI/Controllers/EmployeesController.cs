@@ -77,13 +77,25 @@ public class EmployeesController : BaseController
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult> Update(Guid id, [FromBody] Employee employee)
+    public async Task<ActionResult> Update(Guid id, [FromBody] EmployeeDto dto)
     {
-        if (id != employee.Id)
-            return BadRequest("Employee ID mismatch");
+        var existingEmployee = await _employeeRepository.GetByIdAsync(id);
+        if (existingEmployee == null)
+            return BadRequest("Employee not found");
 
-        await _employeeRepository.UpdateAsync(employee);
-        
+        var manager = await _userRepository.GetByIdAsync(dto.ManagerId);
+        if (manager == null)
+            return BadRequest("Manager not found");
+
+        existingEmployee.Name = dto.Name;
+        existingEmployee.Position = dto.Position;
+        existingEmployee.PhoneNumber = dto.PhoneNumber;
+        existingEmployee.WorkStart = dto.WorkStart;
+        existingEmployee.WorkEnd = dto.WorkEnd;
+        existingEmployee.Manager = manager;
+
+        await _employeeRepository.UpdateAsync(existingEmployee);
+
         return Ok();
     }
 
