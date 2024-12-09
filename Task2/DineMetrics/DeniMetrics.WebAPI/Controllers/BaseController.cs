@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DeniMetrics.WebAPI.Controllers;
 
-
 [ApiController]
 [Route("[controller]")] 
 public abstract class BaseController : Controller

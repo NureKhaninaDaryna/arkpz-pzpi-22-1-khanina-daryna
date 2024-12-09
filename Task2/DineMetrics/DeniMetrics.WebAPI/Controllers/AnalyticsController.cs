@@ -1,8 +1,10 @@
-﻿using DineMetrics.BLL.Services.Interfaces;
+﻿using DeniMetrics.WebAPI.Attributes;
+using DineMetrics.BLL.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DeniMetrics.WebAPI.Controllers;
 
+[Authorize]
 public class AnalyticsController : BaseController
 {
     private readonly IAnalyticsService _analyticsService;

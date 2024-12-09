@@ -1,10 +1,12 @@
-﻿using DineMetrics.Core.Dto;
+﻿using DeniMetrics.WebAPI.Attributes;
+using DineMetrics.Core.Dto;
 using DineMetrics.Core.Models;
 using DineMetrics.DAL.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DeniMetrics.WebAPI.Controllers;
 
+[Authorize]
 public class ReportsController : BaseController
 {
     private readonly IRepository<Report> _reportRepository;

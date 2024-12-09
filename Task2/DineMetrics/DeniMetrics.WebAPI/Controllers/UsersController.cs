@@ -1,4 +1,5 @@
-﻿using DineMetrics.BLL.Services.Interfaces;
+﻿using DeniMetrics.WebAPI.Attributes;
+using DineMetrics.BLL.Services.Interfaces;
 using DineMetrics.Core.Dto;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -25,4 +26,17 @@ public class UsersController : BaseController
     {
         return HandleServiceResult(await _authenticationService.Authenticate(model.Email, model.Password));
     }
+    
+    [HttpPost("change-password")]
+    [Authorize]
+    public async Task<ActionResult<AuthenticateResponseDto>> Login([FromBody] ChangePasswordRequest model)
+    {
+        return HandleServiceResult(await _authenticationService.ChangePassword(CurrentUser!.Id ,model.CurrentPassword, model.NewPassword));
+    }
+}
+
+public class ChangePasswordRequest
+{
+    public string CurrentPassword { get; set; }
+    public string NewPassword { get; set; }
 }

@@ -79,4 +79,36 @@ public class AuthenticationService : IAuthenticationService
 
         return ServiceResult<AuthenticateResponseDto>.Success(new AuthenticateResponseDto(user, token));
     }
+
+    public async Task<ServiceResult> ChangePassword(Guid userId, string currentPassword, string newPassword)
+    {
+        var user = await _userService.GetUserById(userId);
+
+        if (user == null)
+        {
+            return ServiceResult<AuthenticateResponseDto>.Failure(ServiceErrors.FailedAuthenticateByEmail);
+        }
+        
+        var verifyPasswordResult = _passwordHashing.VerifyPassword(currentPassword, user.PasswordHash);
+
+        if (!verifyPasswordResult)
+        {
+            return ServiceResult<AuthenticateResponseDto>.Failure(ServiceErrors.FailedAuthenticateByPassword);
+        }
+        
+        var passwordHash = _passwordHashing.HashPassword(newPassword);
+        
+        user.PasswordHash = passwordHash;
+        
+        try
+        {
+            await _userRepository.UpdateAsync(user);
+            
+            return ServiceResult.Success;
+        }
+        catch 
+        {
+            return ServiceResult.Failure(ServiceErrors.FailedChangePassword);
+        }
+    }
 }
