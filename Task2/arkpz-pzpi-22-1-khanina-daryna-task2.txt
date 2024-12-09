@@ -1,1 +1,534 @@
-﻿
+﻿Міністерство освіти і науки України 
+Харківський національний університет радіоелектроніки
+
+
+
+
+
+
+Кафедра ПІ
+
+
+
+
+
+
+Звіт з лабораторної роботи №2
+З дисципліни «Аналіз та рефакторинг коду»
+
+
+
+
+
+Виконав:
+ст. гр. ПЗПІ-21-1	Ханіна Д.Д
+
+Перевірив:
+ст. викл.	Сокорчук І. П.
+
+
+
+
+
+
+
+
+Харків 2024 р.
+ЛАБОРАТОРНА РОБОТА №2
+
+Мета роботи
+
+Спроєктувати базу даних для серверної частини додатка. Розробити прикладний програмний інтерфейс для роботи з базою даних
+
+Хід роботи
+
+1. Архітектурний огляд системи
+Система включає три основні компоненти:
+Серверна частина:
+API-сервер для обробки запитів;
+База даних для зберігання даних;
+Модулі аналізу даних та надсилання сповіщень.
+IoT-клієнт:
+Датчики для вимірювання температури;
+Датчики для вимірювання людей;
+Модуль передачі даних для відправки інформації на сервер.
+Клієнтська частина:
+Веб-клієнт для доступу до системи через браузер;
+Мобільний клієнт для Android, що забезпечує доступ із мобільного пристрою.
+
+
+1.2  Деталізація компонентів системи
+
+Серверна частина:
+
+API-сервер
+        Функціональність:
+Прийом та обробка запитів від веб і мобільних клієнтів;
+Взаємодія з базою даних для збереження та отримання інформації;
+Прийом даних від IoT-клієнтів;
+Обробка бізнес-логіки (моніторинг умов зберігання, сповіщення, генерація звітів).
+        Технології:
+Мова програмування: ASP.NET Core, що забезпечує продуктивність і надійність;
+API-протокол: RESTful API для стандартного обміну даними між компонентами;
+Безпека: JWT (JSON Web Token) для безпечної аутентифікації та авторизації користувачів.
+         
+   	База даних:
+      	Функціональність:
+Зберігання даних про температурні показники, інформацію про користувачів, звіти, користувачі, їдальні, робітники.
+       Технології:
+Реляційна база даних MS SQL, обрана для надійного збереження та гнучкого управління даними.
+
+       Модуль обробки даних та сповіщень:
+       Функціональність:
+Аналіз даних від IoT-сенсорів у реальному часі;
+Виявлення відхилень від встановлених норм температури;
+Генерація і відправка автоматичних push-сповіщень користувачам.
+       Технології:
+Мова програмування: C#, ASP.NET для ефективної обробки даних;
+Вбудовані сервіси сповіщень: застосування SignalR для push-сповіщень у веб-додатку.
+         
+IoT-клієнт:
+         Сенсори:
+      	Функціональність:
+Постійний моніторинг температури та вологості в реальному часі.
+         Технології:
+Обладнання: DHT22 і DS18B20, що забезпечують точність вимірювань;
+Мікроконтролери: Arduino.
+
+   	Модуль передачі даних:
+         Функціональність:
+Надійна передача даних з сенсорів на сервер;
+Підтримка стабільного з'єднання з мережею для забезпечення точності та доступності даних.
+         Технології:
+Протоколи зв'язку: HTTP(S) для безпечної передачі даних;
+Мережеві інтерфейси: Wi-Fi для швидкої передачі великих обсягів даних.
+
+Клієнтська частина:
+ 	 Веб-клієнт:
+          Функціональність:
+Моніторинг температури та відвідувачів;
+Генерація звітів, аналітика;
+Управління користувачами, рольовий доступ до даних та функцій.
+         Технології:
+Фронтенд фреймворк: Angular для створення динамічного інтерфейсу користувача;
+Бібліотеки UI: Angular Material для сучасного і зручного дизайну.
+
+   	Мобільний клієнт:
+         Функціональність:
+Перегляд умов зберігання у реальному часі;
+Одержання push-сповіщень про відхилення в умовах зберігання.
+         Технології:
+Мова розробки: .NET MAUI для кросплатформеності (iOS та Android).
+
+Ця архітектура дозволяє системі залишатися масштабованою та стійкою до навантажень, забезпечуючи високий рівень безпеки та надійності у зборі, передачі й обробці даних.
+
+1.3. Інтеграція компонентів
+Взаємодія IoT-клієнта з сервером:
+Протокол передачі даних: використовується HTTP для забезпечення стабільного і безпечного обміну інформацією між сенсорами та сервером;
+Безпека: пристрої проходять автентифікацію на основі сертифікатів або токенів, що гарантує безпечний доступ до серверу.
+Взаємодія клієнтської частини з сервером:
+API-запити: RESTful запити за допомогою HTTP-методів (GET, POST, PUT, DELETE) для забезпечення стандартизованої взаємодії між фронтендом і серверною частиною;
+Формат даних: JSON для простого обміну і парсингу інформації між клієнтськими додатками та сервером;
+Автентифікація та авторизація: застосування токенів доступу (JWT) для управління сесіями, забезпечення доступу до різних функцій системи залежно від ролі користувача.
+
+1.4. Безпека та відповідність стандартам
+Ролі та права користувачів (адміністратор, персонал їдальні).
+
+2. Створення UML діаграми прецедентів для серверної частини системи.
+        На основі будови програмної системи розробимо UML діаграму прецедентів, представлену на рисунку 2.1.
+
+
+  
+
+
+Рисунок 2.1 - UML діаграма прецедентів для серверної частини системи
+
+3. Створення ER діаграми даних
+        На основі будови програмної системи розробимо ER діаграму даних, представлену на рисунку 3.1.
+
+  
+
+Рисунок 3.1 - ER діаграма даних
+
+4. Розробка бази даних програмної системи
+        Базу даних буде розроблено з використанням технології Code-First Entity Framework, вона буде відображати ER діаграму та функціональні вимоги.
+        Результатом розробки migration-скрипт для створення бази даних для повної системи, представлений у додатку А.
+
+5. Створення діаграми структури БД
+        На основі розробленої бази даних створимо діаграму її структури, представлену на рисунку 5.1.
+
+Рисунок 5.1 - Діаграма структури бази даних
+
+
+6. Розробка функцій роботи з БД (ORM або CoRM тощо)
+        Для зручної роботи та інтеграції з базою даних, було обрано ORM EntityFramework, що дозволяє ефективно встановлювати звʼязок між MS SQL базою даних і .NET сервером.
+
+7. Розробка API (REST або GraphQL, gRPC тощо) для взаємодії серверної частини з клієнтами
+        Використовуючи технології .NET розробимо типові CRUD шляхи для взаємодії з базою даних через клієнта. Так для кожної моделі будуть типові 5 шляхів: Створити, Змінити, Отримати всі, Отримати один, Видалити. 
+Приклад таких шляхів для моделі Device:
+using DineMetrics.Core.Dto;
+using DineMetrics.Core.Models;
+using DineMetrics.DAL.Repositories;
+using Microsoft.AspNetCore.Mvc;
+
+namespace DeniMetrics.WebAPI.Controllers;
+
+public class DevicesController : BaseController
+{
+    private readonly IRepository<Device> _deviceRepository;
+    private readonly IRepository<Eatery> _eateryRepository;
+
+    public DevicesController(IRepository<Device> deviceRepository, IRepository<Eatery> eateryRepository)
+    {
+        _deviceRepository = deviceRepository;
+        _eateryRepository = eateryRepository;
+    }
+    
+    [HttpGet]
+    public async Task<ActionResult<List<DeviceDto>>> GetAll()
+    {
+        var devices = await _deviceRepository.GetAllAsync();
+        
+        var devicesDtos = devices.Select(device => new DeviceDto
+        {
+            SerialNumber = device.SerialNumber,
+            Model = device.Model,
+            EateryId = device.Eatery.Id
+        }).ToList();
+
+        return devicesDtos;
+    }
+    
+    [HttpGet("{id}")]
+    public async Task<ActionResult<DeviceDto>> GetById(Guid id)
+    {
+        var result = await _deviceRepository.GetByIdAsync(id);
+
+        if (result is null)
+            return BadRequest("Device not found");
+        
+        return new DeviceDto
+        {
+            SerialNumber = result.SerialNumber,
+            Model = result.Model,
+            EateryId = result.Eatery.Id
+        };
+    }
+    
+    [HttpPost]
+    public async Task<ActionResult> Create([FromBody] DeviceDto dto)
+    {
+        var eatery = await _eateryRepository.GetByIdAsync(dto.EateryId);
+        
+        if (eatery is null)
+            return BadRequest("Eatery not found");
+        
+        var device = new Device
+        {
+            SerialNumber = dto.SerialNumber,
+            Model = dto.Model,
+            Eatery = eatery
+        };
+        
+        await _deviceRepository.CreateAsync(device);
+        
+        return CreatedAtAction(nameof(GetById), new { id = device.Id }, dto);
+    }
+    
+    [HttpPut("{id}")]
+    public async Task<ActionResult> Update(Guid id, [FromBody] DeviceDto dto)
+    {
+        var existingDevice = await _deviceRepository.GetByIdAsync(id);
+
+        if (existingDevice == null)
+            return BadRequest("Device not found");
+
+        var eatery = await _eateryRepository.GetByIdAsync(dto.EateryId);
+        if (eatery == null)
+            return BadRequest("Eatery not found");
+
+        existingDevice.SerialNumber = dto.SerialNumber;
+        existingDevice.Model = dto.Model;
+        existingDevice.Eatery = eatery;
+
+        await _deviceRepository.UpdateAsync(existingDevice);
+
+        return Ok();
+    }
+
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> Delete(Guid id)
+    {
+        await _deviceRepository.RemoveByIdAsync(id);
+        
+        return Ok();
+    }
+}
+
+8. Створення специфікації розробленого API
+        Для легкої інтеграції розробимо специфікацію у форматі Swagger. Отримана специфікація наведена у рисунках наведених нижче.
+
+
+Рисунок 8.1 - методи взаємодії для CustometMetrics
+
+
+Рисунок 8.2 - методи взаємодії для Devices
+
+
+Рисунок 8.3 - методи взаємодії для Eateries
+
+
+Рисунок 8.4 - методи взаємодії для Employees
+
+
+Рисунок 8.5 - методи взаємодії для Reports
+
+
+
+Рисунок 8.6 - методи взаємодії для TemperatureMetrics
+
+Рисунок 8.7 - методи взаємодії для Users
+
+
+9. Тестування системи
+        Записуємо змістовне відео з тестуванням взаємодії серверної частини та бази даних і серверної частини й клієнта, проставляємо таймкоди та завантажуємо на сервіс YouTube. Посилання на відео:
+https://youtu.be/QleRW5dzgnU.
+
+Висновки
+
+Під час виконання лабораторної роботи було спроектувано базу даних для серверної частини додатка та розроблено прикладний програмний інтерфейс для роботи з базою даних
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ДОДАТОК А
+MIGRATION-СКРИПТ ДЛЯ СТВОРЕННЯ БАЗИ ДАНИХ
+
+
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+                name: "Eateries",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    OpeningDay = table.Column<DateOnly>(type: "date", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Eateries", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Reports",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AverageTemperature = table.Column<double>(type: "float", nullable: false),
+                    TotalCustomers = table.Column<int>(type: "int", nullable: false),
+                    ReportDate = table.Column<DateOnly>(type: "date", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reports", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Devices",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SerialNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Model = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    State = table.Column<int>(type: "int", nullable: false),
+                    EateryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Devices", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Devices_Eateries_EateryId",
+                        column: x => x.EateryId,
+                        principalTable: "Eateries",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Role = table.Column<int>(type: "int", nullable: false),
+                    AppointmentDate = table.Column<DateOnly>(type: "date", nullable: true),
+                    EateryId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Users_Eateries_EateryId",
+                        column: x => x.EateryId,
+                        principalTable: "Eateries",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CustomerMetrics",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Count = table.Column<int>(type: "int", nullable: false),
+                    Time = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DeviceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ReportId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerMetrics", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CustomerMetrics_Devices_DeviceId",
+                        column: x => x.DeviceId,
+                        principalTable: "Devices",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CustomerMetrics_Reports_ReportId",
+                        column: x => x.ReportId,
+                        principalTable: "Reports",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TemperatureMetrics",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Value = table.Column<double>(type: "float", nullable: false),
+                    Time = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DeviceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ReportId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TemperatureMetrics", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TemperatureMetrics_Devices_DeviceId",
+                        column: x => x.DeviceId,
+                        principalTable: "Devices",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TemperatureMetrics_Reports_ReportId",
+                        column: x => x.ReportId,
+                        principalTable: "Reports",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Employees",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Position = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    WorkStart = table.Column<DateOnly>(type: "date", nullable: false),
+                    WorkEnd = table.Column<DateOnly>(type: "date", nullable: true),
+                    ManagerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Employees", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Employees_Users_ManagerId",
+                        column: x => x.ManagerId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "AppointmentDate", "EateryId", "Email", "PasswordHash", "Role" },
+                values: new object[] { new Guid("6395e8b6-5845-4de5-a30f-ce497fca4e35"), new DateOnly(2022, 11, 28), null, "admin@gmail.com", "f9c355b602a10ee3e31c2f2c23acdcba3b299ddcf9607ba0d10ae9d041e8e09b", 0 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerMetrics_DeviceId",
+                table: "CustomerMetrics",
+                column: "DeviceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerMetrics_ReportId",
+                table: "CustomerMetrics",
+                column: "ReportId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Devices_EateryId",
+                table: "Devices",
+                column: "EateryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Employees_ManagerId",
+                table: "Employees",
+                column: "ManagerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TemperatureMetrics_DeviceId",
+                table: "TemperatureMetrics",
+                column: "DeviceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TemperatureMetrics_ReportId",
+                table: "TemperatureMetrics",
+                column: "ReportId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_EateryId",
+                table: "Users",
+                column: "EateryId");
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
