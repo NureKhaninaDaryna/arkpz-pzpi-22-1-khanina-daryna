@@ -25,7 +25,10 @@ public class EateriesController : BaseController
             Name = eatery.Name,
             Address = eatery.Address,
             Type = eatery.Type,
-            OpeningDay = eatery.OpeningDay
+            OpeningDay = eatery.OpeningDay,
+            MaximumCapacity = eatery.MaximumCapacity,
+            OperatingHours = eatery.OperatingHours,
+            TemperatureThreshold = eatery.TemperatureThreshold
         }).ToList();
         
         return eateriesDtos;
@@ -44,7 +47,10 @@ public class EateriesController : BaseController
             Name = result.Name,
             Address = result.Address,
             Type = result.Type,
-            OpeningDay = result.OpeningDay
+            OpeningDay = result.OpeningDay,
+            MaximumCapacity = result.MaximumCapacity,
+            OperatingHours = result.OperatingHours,
+            TemperatureThreshold = result.TemperatureThreshold
         };
     }
     

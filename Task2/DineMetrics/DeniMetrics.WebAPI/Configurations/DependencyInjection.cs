@@ -30,6 +30,8 @@ public static class DependencyInjection
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddScoped<IJwtService, JwtService>();
+        services.AddScoped<IAnalyticsService, AnalyticsService>();
+        services.AddScoped<IEateryService, EateryService>();
 
         services.Configure<AppSettings>(configuration.GetSection("AppSettings"));
 

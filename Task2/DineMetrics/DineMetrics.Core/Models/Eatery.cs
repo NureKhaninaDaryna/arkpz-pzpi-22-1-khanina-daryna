@@ -15,5 +15,11 @@ namespace DineMetrics.Core.Models
         public virtual ICollection<Device> Devices { get; set; } = new List<Device>();
 
         public virtual ICollection<User> Managers { get; set; } = new List<User>();
+        
+        public string OperatingHours { get; set; } = "08:00-22:00"; // Формат HH:mm-HH:mm
+        
+        public int MaximumCapacity { get; set; } = 100; // Максимальна кількість відвідувачів
+        
+        public double TemperatureThreshold { get; set; } = 25.0; // Температурний поріг
     }
 }

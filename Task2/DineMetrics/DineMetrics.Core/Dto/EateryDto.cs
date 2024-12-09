@@ -11,4 +11,10 @@ public class EateryDto
     public EateryType Type { get; set; }
         
     public DateOnly OpeningDay { get; set; }
+    
+    public string OperatingHours { get; set; }
+    
+    public int MaximumCapacity { get; set; }
+    
+    public double TemperatureThreshold { get; set; }
 }
