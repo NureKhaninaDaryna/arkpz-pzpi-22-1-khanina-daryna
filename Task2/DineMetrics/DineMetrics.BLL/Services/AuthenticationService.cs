@@ -1,5 +1,6 @@
 ﻿using DineMetrics.BLL.Services.Interfaces;
 using DineMetrics.Core.Dto;
+using DineMetrics.Core.Enums;
 using DineMetrics.Core.Models;
 using DineMetrics.Core.Shared;
 using DineMetrics.DAL.Repositories;
@@ -25,7 +26,7 @@ public class AuthenticationService : IAuthenticationService
         _userRepository = userRepository;
     }
 
-    public async Task<ServiceResult<UserDto>> Register(string email, string password)
+    public async Task<ServiceResult<UserDto>> Register(string email, string password, bool isAdmin = false)
     {
         if (!await _userService.IsFreeEmail(email))
         {
@@ -37,7 +38,8 @@ public class AuthenticationService : IAuthenticationService
         var user = new User()
         {
             Email = email,
-            PasswordHash = passwordHash
+            PasswordHash = passwordHash,
+            Role = isAdmin ? UserRole.Admin : UserRole.Manager,
         };
         
         var userDto = new UserDto()

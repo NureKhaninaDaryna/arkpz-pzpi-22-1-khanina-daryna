@@ -15,7 +15,7 @@ public static class DependencyInjection
         
         services.AddDbContext<AppDbContext>(options =>
         {
-            options.UseSqlServer("data source=khanina-d;Database=DineMetricsDb;TrustServerCertificate=true;Integrated Security=True;");
+            options.UseSqlServer("data source=localhost;Database=DineMetricsDb;TrustServerCertificate=true;Integrated Security=True;");
             options.UseLazyLoadingProxies();
         });
         
@@ -32,6 +32,7 @@ public static class DependencyInjection
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IAnalyticsService, AnalyticsService>();
         services.AddScoped<IEateryService, EateryService>();
+        services.AddScoped<IEmailService, EmailService>();
 
         services.Configure<AppSettings>(configuration.GetSection("AppSettings"));
 

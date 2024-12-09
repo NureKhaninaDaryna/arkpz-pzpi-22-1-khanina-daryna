@@ -69,7 +69,8 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CustomerMetricDtoValidator>())
     .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<DeviceDtoValidator>())
     .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<EmployeeDtoValidator>())
-    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<TemperatureMetricDtoValidator>());
+    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<TemperatureMetricDtoValidator>())
+    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<AdminRequestValidator>());
 
 var app = builder.Build();
 

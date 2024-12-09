@@ -1,4 +1,5 @@
 ﻿using DeniMetrics.WebAPI.Attributes;
+using DineMetrics.BLL.Helpers;
 using DineMetrics.BLL.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,10 +9,17 @@ namespace DeniMetrics.WebAPI.Controllers;
 public class AdminsController : BaseController
 {
     private readonly IEateryService _eateryService;
+    private readonly IAuthenticationService _authenticationService;
+    private readonly IEmailService _emailService;
 
-    public AdminsController(IEateryService eateryService)
+    public AdminsController(
+        IEateryService eateryService,
+        IAuthenticationService authenticationService,
+        IEmailService emailService)
     {
         _eateryService = eateryService;
+        _authenticationService = authenticationService;
+        _emailService = emailService;
     }
 
     [HttpPut("{id}/operating-hours")]
@@ -46,6 +54,18 @@ public class AdminsController : BaseController
 
         return Ok(result.Value);
     }
+    
+    [HttpPost("register-admin")]
+    public async Task<IActionResult> RegisterNewAdmin([FromBody] AdminRequest dto)
+    {
+        var password = PasswordGenerator.GenerateRandomPassword();
+        
+        var userResult = await _authenticationService.Register(dto.Email, password, true);
+
+        return !userResult.IsSuccess 
+            ? BadRequest(userResult.Error.Message) 
+            : HandleServiceResult(await _emailService.SendEmailAsync(dto.Email, "DyneMetrics", $"Your password: {password}"));
+    }
 }
 
 public class UpdateOperatingHoursDto
@@ -62,4 +82,9 @@ public class UpdateMaximumCapacityDto
 public class UpdateTemperatureThresholdDto
 {
     public double MinTemperature { get; set; }
+}
+
+public class AdminRequest
+{
+    public string Email { get; set; }
 }
