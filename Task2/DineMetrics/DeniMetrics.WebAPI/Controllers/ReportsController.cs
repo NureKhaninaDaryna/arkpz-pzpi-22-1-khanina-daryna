@@ -1,4 +1,6 @@
-﻿using DeniMetrics.WebAPI.Attributes;
+﻿using System.Globalization;
+using DeniMetrics.WebAPI.Attributes;
+using DineMetrics.BLL.Helpers;
 using DineMetrics.Core.Dto;
 using DineMetrics.Core.Models;
 using DineMetrics.DAL.Repositories;
@@ -46,4 +48,41 @@ public class ReportsController : BaseController
             AverageTemperature = result.AverageTemperature
         };
     }
+    
+    [HttpPost("download")]
+    public async Task<IActionResult> GetReportsByDateRange(ReportDownloadDto model)
+    {
+        if (model.EndDate < model.StartDate)
+        {
+            return BadRequest("End date cannot be before start date.");
+        }
+        
+        var reports = await _reportRepository
+            .GetByPredicateAsync(r => r.ReportDate >= model.StartDate && r.ReportDate <= model.EndDate);
+        
+        if (reports.Count == 0)
+        {
+            return NotFound("No reports found for the given date range.");
+        }
+        
+        var data = reports.Select(r => new List<string>
+        {
+            r.ReportDate.ToString(),
+            Math.Round(r.AverageTemperature, 2).ToString(CultureInfo.InvariantCulture),
+            r.TotalCustomers.ToString()
+        }).ToList();
+        
+        var headers = new List<string> { "Date", "Average Temperature", "Total Customers" };
+        
+        var pdfBytes = PdfGeneratorService.CreatePdf(data, "Reports from " + model.StartDate + " to " + model.EndDate, headers);
+        
+        return File(pdfBytes, "application/pdf", "Reports_" + model.StartDate + "_to_" + model.EndDate + ".pdf");
+    }
+}
+
+public class ReportDownloadDto
+{
+    public DateOnly StartDate { get; set; }
+    
+    public DateOnly EndDate { get; set; }
 }
