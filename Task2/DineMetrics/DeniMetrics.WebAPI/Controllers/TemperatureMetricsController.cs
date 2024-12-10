@@ -1,4 +1,5 @@
 ﻿using DeniMetrics.WebAPI.Attributes;
+using DineMetrics.BLL.Services.Interfaces;
 using DineMetrics.Core.Dto;
 using DineMetrics.Core.Models;
 using DineMetrics.DAL.Repositories;
@@ -12,12 +13,18 @@ public class TemperatureMetricsController : BaseController
     private readonly IRepository<TemperatureMetric> _temperatureMetricRepository;
     private readonly IRepository<Device> _deviceRepository;
     private readonly IRepository<Report> _reportRepository;
+    private readonly IMetricService _metricService;
 
-    public TemperatureMetricsController(IRepository<TemperatureMetric> temperatureMetricRepository, IRepository<Device> deviceRepository, IRepository<Report> reportRepository)
+    public TemperatureMetricsController(
+        IRepository<TemperatureMetric> temperatureMetricRepository, 
+        IRepository<Device> deviceRepository, 
+        IRepository<Report> reportRepository,
+        IMetricService metricService)
     {
         _temperatureMetricRepository = temperatureMetricRepository;
         _deviceRepository = deviceRepository;
         _reportRepository = reportRepository;
+        _metricService = metricService;
     }
 
     [HttpGet]
@@ -66,30 +73,11 @@ public class TemperatureMetricsController : BaseController
             Device = device
         };
         
-        var currentDate = DateOnly.FromDateTime(DateTime.Now);
-
-        var todayReport = await _reportRepository.GetByPredicateAsync(r => r.ReportDate == currentDate);
-
-        if (todayReport.Count > 0)
+        var result = await _metricService.CreateTemperatureMetric(metric);
+        if (!result.IsSuccess)
         {
-            metric.Report = todayReport.FirstOrDefault()!;
-            
-            await UpdateReport(metric);
+            return BadRequest(result);
         }
-        else
-        {
-            var report = new Report()
-            {
-                AverageTemperature = dto.Value,
-                ReportDate = currentDate
-            };
-
-            await _reportRepository.CreateAsync(report);
-            
-            metric.Report = report;
-        }
-
-        await _temperatureMetricRepository.CreateAsync(metric);
 
         return CreatedAtAction(nameof(GetById), new { id = metric.Id }, dto);
     }
@@ -100,13 +88,5 @@ public class TemperatureMetricsController : BaseController
         await _temperatureMetricRepository.RemoveByIdAsync(id);
         
         return Ok();
-    }
-    
-    private async Task UpdateReport(TemperatureMetric metric)
-    {
-        metric.Report.AverageTemperature += metric.Value;
-        metric.Report.AverageTemperature /= metric.Report.TemperatureMetrics.Count;
-        
-        await _reportRepository.UpdateAsync(metric.Report);
     }
 }

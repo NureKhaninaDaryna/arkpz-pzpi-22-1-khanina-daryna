@@ -1,4 +1,5 @@
 ﻿using DeniMetrics.WebAPI.Attributes;
+using DineMetrics.BLL.Services.Interfaces;
 using DineMetrics.Core.Dto;
 using DineMetrics.Core.Models;
 using DineMetrics.DAL.Repositories;
@@ -12,12 +13,18 @@ public class CustomerMetricsController : BaseController
     private readonly IRepository<CustomerMetric> _customerMetricRepository;
     private readonly IRepository<Device> _deviceRepository;
     private readonly IRepository<Report> _reportRepository;
+    private readonly IMetricService _metricService;
 
-    public CustomerMetricsController(IRepository<CustomerMetric> customerMetricRepository, IRepository<Device> deviceRepository, IRepository<Report> reportRepository)
+    public CustomerMetricsController(
+        IRepository<CustomerMetric> customerMetricRepository, 
+        IRepository<Device> deviceRepository,
+        IRepository<Report> reportRepository,
+        IMetricService metricService)
     {
         _customerMetricRepository = customerMetricRepository;
         _deviceRepository = deviceRepository;
         _reportRepository = reportRepository;
+        _metricService = metricService;
     }
 
     [HttpGet]
@@ -66,30 +73,11 @@ public class CustomerMetricsController : BaseController
             Device = device
         };
         
-        var currentDate = DateOnly.FromDateTime(DateTime.Now);
-
-        var todayReport = await _reportRepository.GetByPredicateAsync(r => r.ReportDate == currentDate);
-
-        if (todayReport.Count > 0)
+        var result = await _metricService.CreateCustomerMetric(metric);
+        if (!result.IsSuccess)
         {
-            metric.Report = todayReport.FirstOrDefault()!;
-
-            await UpdateReport(metric);
+           return BadRequest(result);
         }
-        else
-        {
-            var report = new Report()
-            {
-                TotalCustomers = dto.Count,
-                ReportDate = currentDate
-            };
-
-            await _reportRepository.CreateAsync(report);
-            
-            metric.Report = report;
-        }
-
-        await _customerMetricRepository.CreateAsync(metric);
 
         return CreatedAtAction(nameof(GetById), new { id = metric.Id }, dto);
     }
@@ -100,12 +88,5 @@ public class CustomerMetricsController : BaseController
         await _customerMetricRepository.RemoveByIdAsync(id);
         
         return Ok();
-    }
-
-    private async Task UpdateReport(CustomerMetric metric)
-    {
-        metric.Report.TotalCustomers += metric.Count;
-
-        await _reportRepository.UpdateAsync(metric.Report);
     }
 }
