@@ -12,18 +12,15 @@ public class TemperatureMetricsController : BaseController
 {
     private readonly IRepository<TemperatureMetric> _temperatureMetricRepository;
     private readonly IRepository<Device> _deviceRepository;
-    private readonly IRepository<Report> _reportRepository;
     private readonly IMetricService _metricService;
 
     public TemperatureMetricsController(
         IRepository<TemperatureMetric> temperatureMetricRepository, 
-        IRepository<Device> deviceRepository, 
-        IRepository<Report> reportRepository,
+        IRepository<Device> deviceRepository,
         IMetricService metricService)
     {
         _temperatureMetricRepository = temperatureMetricRepository;
         _deviceRepository = deviceRepository;
-        _reportRepository = reportRepository;
         _metricService = metricService;
     }
 

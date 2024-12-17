@@ -12,7 +12,6 @@ public class CustomerMetricsController : BaseController
 {
     private readonly IRepository<CustomerMetric> _customerMetricRepository;
     private readonly IRepository<Device> _deviceRepository;
-    private readonly IRepository<Report> _reportRepository;
     private readonly IMetricService _metricService;
 
     public CustomerMetricsController(
@@ -23,7 +22,6 @@ public class CustomerMetricsController : BaseController
     {
         _customerMetricRepository = customerMetricRepository;
         _deviceRepository = deviceRepository;
-        _reportRepository = reportRepository;
         _metricService = metricService;
     }
 

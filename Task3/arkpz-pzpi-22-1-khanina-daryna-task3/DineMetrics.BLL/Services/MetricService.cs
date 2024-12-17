@@ -63,7 +63,7 @@ public class MetricService : IMetricService
         var currentDate = DateOnly.FromDateTime(DateTime.Now);
 
         var todayReport = await _reportRepository.GetByPredicateAsync(r => r.ReportDate == currentDate);
-
+        
         if (todayReport.Count > 0)
         {
             metric.Report = todayReport.FirstOrDefault()!;
@@ -72,6 +72,11 @@ public class MetricService : IMetricService
         }
         else
         {
+            if (metric.Count <= 0)
+            {
+                return ServiceResult.Success;
+            }
+            
             var report = new Report()
             {
                 TotalCustomers = metric.Count,
@@ -106,8 +111,16 @@ public class MetricService : IMetricService
     
     private async Task UpdateReport(CustomerMetric metric)
     {
-        metric.Report.TotalCustomers += metric.Count;
+        var metrics = metric.Report.TotalCustomers;
+        metrics += metric.Count;
 
+        if (metrics < 0)
+        {
+            return;
+        }
+        
+        metric.Report.TotalCustomers = metrics;
+        
         await _reportRepository.UpdateAsync(metric.Report);
         
         await CheckReport(metric.Report, customerMetric: metric);
