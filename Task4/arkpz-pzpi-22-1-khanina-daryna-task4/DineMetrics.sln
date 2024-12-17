@@ -21,6 +21,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeniMetrics.WebAPI", "DeniM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DineMetrics.TemperatureSensorEmulator", "DineMetrics.TemperatureSensorEmulator\DineMetrics.TemperatureSensorEmulator.csproj", "{245D4764-3190-49FA-AD67-758F7DBB1B2D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DineMetrics.CustomerSensorEmulator", "DineMetrics.CustomerSensorEmulator\DineMetrics.CustomerSensorEmulator.csproj", "{A5228E06-677E-446B-A505-F90CADAAE4DE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IoT", "IoT", "{DB8E328C-F86B-4021-85CE-CD067A9447D1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,11 +51,19 @@ Global
 		{245D4764-3190-49FA-AD67-758F7DBB1B2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{245D4764-3190-49FA-AD67-758F7DBB1B2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{245D4764-3190-49FA-AD67-758F7DBB1B2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5228E06-677E-446B-A505-F90CADAAE4DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5228E06-677E-446B-A505-F90CADAAE4DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5228E06-677E-446B-A505-F90CADAAE4DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5228E06-677E-446B-A505-F90CADAAE4DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B1C633AD-DC38-49A7-87BD-57BFE65EC8C1}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A5228E06-677E-446B-A505-F90CADAAE4DE} = {DB8E328C-F86B-4021-85CE-CD067A9447D1}
+		{245D4764-3190-49FA-AD67-758F7DBB1B2D} = {DB8E328C-F86B-4021-85CE-CD067A9447D1}
 	EndGlobalSection
 EndGlobal

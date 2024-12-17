@@ -2,8 +2,16 @@
 using System.Text;
 using System.Text.Json;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
-namespace DineMetrics.TemperatureSensorEmulator;
+namespace DineMetrics.CustomerSensorEmulator;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml
@@ -13,8 +21,9 @@ public partial class MainWindow : Window
     private readonly HttpClient _httpClient = new();
     private bool _isReading;
     private readonly Random _random = new();
-    
-    private const string TemperatureMetricsUrl = "https://localhost:7239/TemperatureMetrics";
+
+    // Константи
+    private const string CustomerMetricsUrl = "https://localhost:7239/CustomerMetrics";
     private const string DeviceId = "83242380-277b-40d5-82a4-cfc5663d4994";
     
     public MainWindow()
@@ -28,15 +37,15 @@ public partial class MainWindow : Window
         {
             _isReading = true;
             StatusText.Text = "Reading started...";
-            
+                
             while (_isReading)
             {
-                double temperature = GetTemperature();
-                TemperatureText.Text = $"{temperature:F2} °C";
+                int customerCount = GetCustomerCount();
+                CustomerCountText.Text = customerCount.ToString();
 
-                await SendTemperatureToServer(temperature);
+                await SendCustomerCountToServer(customerCount);
 
-                await Task.Delay(7000); // Затримка 7 секунди між вимірюваннями
+                await Task.Delay(5000); // Затримка 5 секунд
             }
         }
         else
@@ -46,33 +55,32 @@ public partial class MainWindow : Window
         }
     }
     
-    // Метод для імітації зчитування температури
-    private double GetTemperature()
+    // Метод для імітації кількості користувачів
+    private int GetCustomerCount()
     {
-        return 20 + _random.NextDouble() * 15; // Випадкове значення від 20 до 35
+        return _random.Next(-15, 16); // Значення від -15 до 15
     }
 
-    // Метод для відправки температури на сервер
-    private async Task SendTemperatureToServer(double temperature)
+    // Метод для відправки даних на сервер
+    private async Task SendCustomerCountToServer(int count)
     {
         try
         {
             var data = new
             {
                 deviceId = DeviceId,
-                value = temperature,
+                count = count,
                 time = DateTime.UtcNow
             };
 
             var json = JsonSerializer.Serialize(data);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            // Надсилаємо дані на сервер
-            var response = await _httpClient.PostAsync(TemperatureMetricsUrl, content);
+            var response = await _httpClient.PostAsync(CustomerMetricsUrl, content);
 
             StatusText.Text = response.IsSuccessStatusCode ? 
-                "Temperature sent successfully." : 
-                "Failed to send temperature data.";
+                $"Sent: {count} users at {DateTime.Now:T}" : 
+                "Failed to send data.";
         }
         catch (Exception ex)
         {
