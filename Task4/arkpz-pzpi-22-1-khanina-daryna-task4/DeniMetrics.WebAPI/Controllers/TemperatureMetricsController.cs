@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DeniMetrics.WebAPI.Controllers;
 
-[Authorize]
 public class TemperatureMetricsController : BaseController
 {
     private readonly IRepository<TemperatureMetric> _temperatureMetricRepository;
@@ -25,6 +24,7 @@ public class TemperatureMetricsController : BaseController
     }
 
     [HttpGet]
+    [Authorize]
     public async Task<ActionResult<List<TemperatureMetricDto>>> GetAll()
     {
         var temperatureMetrics = await _temperatureMetricRepository.GetAllAsync();
@@ -40,6 +40,7 @@ public class TemperatureMetricsController : BaseController
     }
 
     [HttpGet("{id}")]
+    [Authorize]
     public async Task<ActionResult<TemperatureMetricDto>> GetById(Guid id)
     {
         var result = await _temperatureMetricRepository.GetByIdAsync(id);
@@ -80,6 +81,7 @@ public class TemperatureMetricsController : BaseController
     }
 
     [HttpDelete("{id}")]
+    [Authorize]
     public async Task<ActionResult> Delete(Guid id)
     {
         await _temperatureMetricRepository.RemoveByIdAsync(id);

@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DeniMetrics.WebAPI.Controllers;
 
-[Authorize]
 public class CustomerMetricsController : BaseController
 {
     private readonly IRepository<CustomerMetric> _customerMetricRepository;
@@ -26,6 +25,7 @@ public class CustomerMetricsController : BaseController
     }
 
     [HttpGet]
+    [Authorize]
     public async Task<ActionResult<List<CustomerMetricDto>>> GetAll()
     {
         var customerMetrics = await _customerMetricRepository.GetAllAsync();
@@ -41,6 +41,7 @@ public class CustomerMetricsController : BaseController
     }
 
     [HttpGet("{id}")]
+    [Authorize]
     public async Task<ActionResult<CustomerMetricDto>> GetById(Guid id)
     {
         var result = await _customerMetricRepository.GetByIdAsync(id);
@@ -81,6 +82,7 @@ public class CustomerMetricsController : BaseController
     }
 
     [HttpDelete("{id}")]
+    [Authorize]
     public async Task<ActionResult> Delete(Guid id)
     {
         await _customerMetricRepository.RemoveByIdAsync(id);
