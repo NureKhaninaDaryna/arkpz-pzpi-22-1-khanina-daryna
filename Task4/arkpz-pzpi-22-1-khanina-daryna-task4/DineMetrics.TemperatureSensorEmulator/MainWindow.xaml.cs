@@ -15,11 +15,25 @@ public partial class MainWindow : Window
     private readonly Random _random = new();
     
     private const string TemperatureMetricsUrl = "https://localhost:7239/TemperatureMetrics";
+    private const string DeviceGetSecondsDelay = $"https://localhost:7239/Devices/{DeviceId}/delay";
     private const string DeviceId = "83242380-277b-40d5-82a4-cfc5663d4994";
+    
+    private int _secondsDelay = 5;
     
     public MainWindow()
     {
         InitializeComponent();
+        
+        Loaded += async (sender, args) =>
+        {
+            var response = await _httpClient.GetAsync(DeviceGetSecondsDelay);
+
+            if (!response.IsSuccessStatusCode) return;
+            
+            var jsonData = await response.Content.ReadAsStringAsync();
+                
+            _secondsDelay = int.Parse(jsonData);
+        };
     }
     
     private async void StartStop_Click(object sender, RoutedEventArgs e)
@@ -36,7 +50,7 @@ public partial class MainWindow : Window
 
                 await SendTemperatureToServer(temperature);
 
-                await Task.Delay(7000); // Затримка 7 секунди між вимірюваннями
+                await Task.Delay(_secondsDelay * 100);
             }
         }
         else
