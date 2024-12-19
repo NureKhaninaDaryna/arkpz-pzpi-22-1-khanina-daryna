@@ -1,1 +1,241 @@
-﻿
+﻿            Міністерство освіти і науки України 
+               Харківський національний університет радіоелектроніки
+
+
+
+
+Кафедра ПІ
+
+
+
+
+Звіт з лабораторної роботи №4
+З дисципліни «Аналіз та рефакторинг коду»
+
+
+
+
+Виконав:
+ст. гр. ПЗПІ-22-1	Ханіна Д. Д.
+
+Перевірив:
+ст. викл.	Сокорчук І. П.
+
+
+
+Харків 2024 р.
+ЛАБОРАТОРНА РОБОТА №4
+
+Мета роботи
+
+Розробити бізнес-логіку та функції налаштування для IoT клієнта програмної системи.
+
+
+Хід роботи
+
+Розробка будови програмного забезпечення ІоТ клієнта 
+Програмне забезпечення IoT-клієнта складається з декількох основних компонентів, які забезпечують його роботу. 
+Основна функція клієнта – це збір даних із сенсора, їх валідація, обробка і надсилання на сервер. 
+Архітектура побудована на основі трьох основних рівнів: 
+
+Рівень сенсора (Sensor Layer) Відповідає за збір і симуляцію даних сенсора (температура або кількість користувачів). Дані генеруються випадково для симуляції реальних вимірювань. 
+Рівень обробки (Processing Layer) Обробляє отримані дані, виконує валідацію та форматує їх у потрібний вигляд. Валідація забезпечує коректність даних перед передачею. 
+Рівень передачі даних (Communication Layer) Використовує HTTP-протокол для передачі даних на сервер. Виконує обробку відповідей сервера, забезпечує зворотний зв'язок про статус передачі.
+
+Створення UML діаграми прецедентів для ІоТ клієнта.
+        На основі розробленої будови, створемо UML діаграму прецедентів. Діаграма представлена на рисунку 1.
+
+
+Рисунок 1 - UML діаграма прецедентів для ІоТ клієнта
+
+
+ Бізнес-логіка (математична обробка даних)
+
+IoT клієнт обробляє дані, отримані із сенсорів (температура, кількість користувачів). Основні математичні операції та бізнес-правила включають:
+Фільтрація нетипових значень:
+Дані перевіряються на відповідність заданим діапазонам:
+Температура: від 20°C до 35°C.
+Кількість користувачів: від -15 до 15.
+Якщо дані виходять за межі діапазону, вони відхиляються як нетипові.
+Середнє значення даних за період:
+Збираються дані за певний проміжок часу, і обчислюється їх середнє значення. Це потрібно для аналізу тенденцій.
+Оповіщення при перевищенні порогів:
+Якщо значення температури або кількості користувачів виходять за допустимі межі, генерується оповіщення (email або інша нотифікація).
+Згладжування показників (Moving Average):
+Для усунення "стрибків" у даних застосовується ковзне середнє.
+
+Створення діаграми діяльності для ІоТ клієнта.
+        На основі бізнес-логіки розробимо діаграму діяльності для ІоТ клієнта. Діаграма представлена на рисунку 2.
+
+
+Рисунок 2 - Діаграма діяльності для ІоТ клієнта
+
+Створення програмної реалізації бізнес-логіки та функцій 
+
+Було розроблено емулятор сенсорів температури та руху для IoT-клієнта на платформі WPF (Windows Presentation Foundation) з використанням .NET. Цей додаток імітує роботу IoT-сенсорів, що зчитують значення температури та кількості користувачів у певному середовищі, а також передає ці дані на сервер.
+
+Ємулятор руху
+
+public partial class MainWindow : Window
+{
+    private readonly HttpClient _httpClient = new();
+    private bool _isReading;
+    private readonly Random _random = new();
+
+    // Константи
+    private const string CustomerMetricsUrl = "https://localhost:7239/CustomerMetrics";
+    private const string DeviceId = "83242380-277b-40d5-82a4-cfc5663d4994";
+    
+    public MainWindow()
+    {
+        InitializeComponent();
+    }
+    
+    private async void StartStop_Click(object sender, RoutedEventArgs e)
+    {
+        if (!_isReading)
+        {
+            _isReading = true;
+            StatusText.Text = "Reading started...";
+                
+            while (_isReading)
+            {
+                int customerCount = GetCustomerCount();
+                CustomerCountText.Text = customerCount.ToString();
+
+                await SendCustomerCountToServer(customerCount);
+
+                await Task.Delay(5000); // Затримка 5 секунд
+            }
+        }
+        else
+        {
+            _isReading = false;
+            StatusText.Text = "Reading stopped.";
+        }
+    }
+    
+    // Метод для імітації кількості користувачів
+    private int GetCustomerCount()
+    {
+        return _random.Next(-15, 16); // Значення від -15 до 15
+    }
+
+    // Метод для відправки даних на сервер
+    private async Task SendCustomerCountToServer(int count)
+    {
+        try
+        {
+            var data = new
+            {
+                deviceId = DeviceId,
+                count = count,
+                time = DateTime.UtcNow
+            };
+
+            var json = JsonSerializer.Serialize(data);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync(CustomerMetricsUrl, content);
+
+            StatusText.Text = response.IsSuccessStatusCode ? 
+                $"Sent: {count} users at {DateTime.Now:T}" : 
+                "Failed to send data.";
+        }
+        catch (Exception ex)
+        {
+            StatusText.Text = $"Error: {ex.Message}";
+        }
+    }
+}
+
+Ємулятор температури
+
+public partial class MainWindow : Window
+{
+    private readonly HttpClient _httpClient = new();
+    private bool _isReading;
+    private readonly Random _random = new();
+    
+    private const string TemperatureMetricsUrl = "https://localhost:7239/TemperatureMetrics";
+    private const string DeviceId = "83242380-277b-40d5-82a4-cfc5663d4994";
+    
+    public MainWindow()
+    {
+        InitializeComponent();
+    }
+    
+    private async void StartStop_Click(object sender, RoutedEventArgs e)
+    {
+        if (!_isReading)
+        {
+            _isReading = true;
+            StatusText.Text = "Reading started...";
+            
+            while (_isReading)
+            {
+                double temperature = GetTemperature();
+                TemperatureText.Text = $"{temperature:F2} °C";
+
+                await SendTemperatureToServer(temperature);
+
+                await Task.Delay(7000); // Затримка 7 секунди між вимірюваннями
+            }
+        }
+        else
+        {
+            _isReading = false;
+            StatusText.Text = "Reading stopped.";
+        }
+    }
+    
+    // Метод для імітації зчитування температури
+    private double GetTemperature()
+    {
+        return 20 + _random.NextDouble() * 15; // Випадкове значення від 20 до 35
+    }
+
+    // Метод для відправки температури на сервер
+    private async Task SendTemperatureToServer(double temperature)
+    {
+        try
+        {
+            var data = new
+            {
+                deviceId = DeviceId,
+                value = temperature,
+                time = DateTime.UtcNow
+            };
+
+            var json = JsonSerializer.Serialize(data);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            // Надсилаємо дані на сервер
+            var response = await _httpClient.PostAsync(TemperatureMetricsUrl, content);
+
+            StatusText.Text = response.IsSuccessStatusCode ? 
+                "Temperature sent successfully." : 
+                "Failed to send temperature data.";
+        }
+        catch (Exception ex)
+        {
+            StatusText.Text = $"Error: {ex.Message}";
+        }
+    }
+}
+
+
+
+Рисунок 3 - ІоТ клієнт
+
+Також у системі ми можемо змінити секунди затримки відправлення показників девайса для налаштування ІоТ клієнта.
+
+
+Рисунок 4- ІоТ клієнт
+
+Тестування системи
+        Записуємо змістовне відео з тестуванням бізнес-логіки та функцій конфігурування ІоТ клієнта, проставляємо таймкоди та завантажуємо на сервіс YouTube. Посилання на відео: https://youtu.be/LiL0ipc34dI
+
+ВИСНОВКИ
+        У ході виконання роботи було розроблено бізнес-логіку та функції налаштування для IoT клієнта програмної системи.
+
