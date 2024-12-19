@@ -95,14 +95,11 @@ public class MetricService : IMetricService
 
     private async Task UpdateReport(TemperatureMetric metric)
     {
-        var metrics = metric.Report.TemperatureMetrics.Count;
+        var temp = metric.Report.AverageTemperature;
+        temp += metric.Value;
+        temp /= 2;
         
-        metric.Report.AverageTemperature += metric.Value;
-
-        if (metrics > 0)
-        {
-            metric.Report.AverageTemperature /= metric.Report.TemperatureMetrics.Count;
-        }
+        metric.Report.AverageTemperature = temp;
         
         await _reportRepository.UpdateAsync(metric.Report);
         

@@ -50,7 +50,7 @@ public partial class MainWindow : Window
 
                 await SendTemperatureToServer(temperature);
 
-                await Task.Delay(_secondsDelay * 100);
+                await Task.Delay(_secondsDelay * 1000);
             }
         }
         else
