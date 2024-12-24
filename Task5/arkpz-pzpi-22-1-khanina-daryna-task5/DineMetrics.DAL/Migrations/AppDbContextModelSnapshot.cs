@@ -4,7 +4,6 @@ using DineMetrics.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -12,11 +11,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DineMetrics.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241209093442_AddSettingsForEatery")]
-    partial class AddSettingsForEatery
+    partial class AppDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,18 +27,20 @@ namespace DineMetrics.DAL.Migrations
 
             modelBuilder.Entity("DineMetrics.Core.Models.CustomerMetric", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Count")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("DeviceId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("DeviceId")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("ReportId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("ReportId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Time")
                         .HasColumnType("datetime2");
@@ -57,16 +56,21 @@ namespace DineMetrics.DAL.Migrations
 
             modelBuilder.Entity("DineMetrics.Core.Models.Device", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("EateryId")
-                        .HasColumnType("uniqueidentifier");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("EateryId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Model")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SecondsDelay")
+                        .HasColumnType("int");
 
                     b.Property<string>("SerialNumber")
                         .IsRequired()
@@ -84,9 +88,11 @@ namespace DineMetrics.DAL.Migrations
 
             modelBuilder.Entity("DineMetrics.Core.Models.Eatery", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
                         .IsRequired()
@@ -119,12 +125,14 @@ namespace DineMetrics.DAL.Migrations
 
             modelBuilder.Entity("DineMetrics.Core.Models.Employee", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("ManagerId")
-                        .HasColumnType("uniqueidentifier");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ManagerId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -153,9 +161,11 @@ namespace DineMetrics.DAL.Migrations
 
             modelBuilder.Entity("DineMetrics.Core.Models.Report", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<double>("AverageTemperature")
                         .HasColumnType("float");
@@ -173,15 +183,17 @@ namespace DineMetrics.DAL.Migrations
 
             modelBuilder.Entity("DineMetrics.Core.Models.TemperatureMetric", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("DeviceId")
-                        .HasColumnType("uniqueidentifier");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<Guid>("ReportId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("DeviceId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReportId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Time")
                         .HasColumnType("datetime2");
@@ -200,15 +212,17 @@ namespace DineMetrics.DAL.Migrations
 
             modelBuilder.Entity("DineMetrics.Core.Models.User", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateOnly?>("AppointmentDate")
                         .HasColumnType("date");
 
-                    b.Property<Guid?>("EateryId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int?>("EateryId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -230,7 +244,7 @@ namespace DineMetrics.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("efe9b645-2e0f-49b8-a599-c24eede796f4"),
+                            Id = 1,
                             AppointmentDate = new DateOnly(2022, 11, 28),
                             Email = "admin@gmail.com",
                             PasswordHash = "f9c355b602a10ee3e31c2f2c23acdcba3b299ddcf9607ba0d10ae9d041e8e09b",

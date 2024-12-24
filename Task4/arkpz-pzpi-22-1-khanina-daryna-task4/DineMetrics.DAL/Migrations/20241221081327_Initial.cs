@@ -15,11 +15,15 @@ namespace DineMetrics.DAL.Migrations
                 name: "Eateries",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Type = table.Column<int>(type: "int", nullable: false),
-                    OpeningDay = table.Column<DateOnly>(type: "date", nullable: false)
+                    OpeningDay = table.Column<DateOnly>(type: "date", nullable: false),
+                    OperatingHours = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MaximumCapacity = table.Column<int>(type: "int", nullable: false),
+                    TemperatureThreshold = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -30,7 +34,8 @@ namespace DineMetrics.DAL.Migrations
                 name: "Reports",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     AverageTemperature = table.Column<double>(type: "float", nullable: false),
                     TotalCustomers = table.Column<int>(type: "int", nullable: false),
                     ReportDate = table.Column<DateOnly>(type: "date", nullable: false)
@@ -44,11 +49,13 @@ namespace DineMetrics.DAL.Migrations
                 name: "Devices",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     SerialNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Model = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     State = table.Column<int>(type: "int", nullable: false),
-                    EateryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    SecondsDelay = table.Column<int>(type: "int", nullable: false),
+                    EateryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -65,12 +72,13 @@ namespace DineMetrics.DAL.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Role = table.Column<int>(type: "int", nullable: false),
                     AppointmentDate = table.Column<DateOnly>(type: "date", nullable: true),
-                    EateryId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    EateryId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -86,11 +94,12 @@ namespace DineMetrics.DAL.Migrations
                 name: "CustomerMetrics",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Count = table.Column<int>(type: "int", nullable: false),
                     Time = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DeviceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ReportId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    DeviceId = table.Column<int>(type: "int", nullable: false),
+                    ReportId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -113,11 +122,12 @@ namespace DineMetrics.DAL.Migrations
                 name: "TemperatureMetrics",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Value = table.Column<double>(type: "float", nullable: false),
                     Time = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DeviceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ReportId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    DeviceId = table.Column<int>(type: "int", nullable: false),
+                    ReportId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -140,13 +150,14 @@ namespace DineMetrics.DAL.Migrations
                 name: "Employees",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Position = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     WorkStart = table.Column<DateOnly>(type: "date", nullable: false),
                     WorkEnd = table.Column<DateOnly>(type: "date", nullable: true),
-                    ManagerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    ManagerId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -162,7 +173,7 @@ namespace DineMetrics.DAL.Migrations
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "AppointmentDate", "EateryId", "Email", "PasswordHash", "Role" },
-                values: new object[] { new Guid("6395e8b6-5845-4de5-a30f-ce497fca4e35"), new DateOnly(2022, 11, 28), null, "admin@gmail.com", "f9c355b602a10ee3e31c2f2c23acdcba3b299ddcf9607ba0d10ae9d041e8e09b", 0 });
+                values: new object[] { 1, new DateOnly(2022, 11, 28), null, "admin@gmail.com", "f9c355b602a10ee3e31c2f2c23acdcba3b299ddcf9607ba0d10ae9d041e8e09b", 0 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_CustomerMetrics_DeviceId",
