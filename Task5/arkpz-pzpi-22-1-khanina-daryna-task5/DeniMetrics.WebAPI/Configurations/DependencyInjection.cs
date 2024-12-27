@@ -15,7 +15,7 @@ public static class DependencyInjection
         
         services.AddDbContext<AppDbContext>(options =>
         {
-            options.UseSqlServer("data source=localhost;Database=DineMetricsDb;TrustServerCertificate=true;Integrated Security=True;");
+            options.UseSqlServer("Server=tcp:dinemetrics.database.windows.net,1433;Initial Catalog=DineMetrics;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Authentication=Active Directory Interactive;");
             options.UseLazyLoadingProxies();
         });
         

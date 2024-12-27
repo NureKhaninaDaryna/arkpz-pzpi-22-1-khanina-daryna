@@ -250,7 +250,7 @@ namespace DineMetrics.DAL.Migrations
                             Id = 1,
                             AppointmentDate = new DateOnly(2022, 11, 28),
                             Email = "admin@gmail.com",
-                            PasswordHash = "f9c355b602a10ee3e31c2f2c23acdcba3b299ddcf9607ba0d10ae9d041e8e09b",
+                            PasswordHash = "7f5b3331091e4db703d6d6ab8a8039ee4f11599f1d2386619b2b55c784361562",
                             Role = 0
                         });
                 });

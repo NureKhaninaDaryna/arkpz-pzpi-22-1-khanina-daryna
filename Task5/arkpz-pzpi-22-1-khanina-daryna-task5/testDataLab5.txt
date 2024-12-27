@@ -1,0 +1,44 @@
+
+    Login
+    {
+      "email": "admin@gmail.com",
+      "password": "SayMyName123~"
+    }
+    
+    Register
+    {
+      "email": "test@gmail",
+      "password": "NewPassword1!"
+    }
+    
+    {
+      "name": "Буфет",
+      "address": "Салтівське шоссе",
+      "type": 0,
+      "openingDay": "2022-12-24",
+      "operatingHours": "2:00-13:00",
+      "maximumCapacity": 60,
+      "temperatureThreshold": 23
+    }
+    
+    {
+      "serialNumber": "GGGFFF",
+      "model": "test",
+      "eateryId": 1
+    }
+    
+    
+    register new admin
+    
+        {
+          "email": "daryna.khanina@nure.ua",
+          "password": "vA5Vjz1a"
+        }
+        
+    wpf apps
+    
+    reports
+    
+    2022-07-01
+    
+    2024-12-24

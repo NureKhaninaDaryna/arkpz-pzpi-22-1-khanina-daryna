@@ -173,7 +173,7 @@ namespace DineMetrics.DAL.Migrations
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "AppointmentDate", "EateryId", "Email", "PasswordHash", "Role" },
-                values: new object[] { 1, new DateOnly(2022, 11, 28), null, "admin@gmail.com", "f9c355b602a10ee3e31c2f2c23acdcba3b299ddcf9607ba0d10ae9d041e8e09b", 0 });
+                values: new object[] { 1, new DateOnly(2022, 11, 28), null, "admin@gmail.com", "7f5b3331091e4db703d6d6ab8a8039ee4f11599f1d2386619b2b55c784361562", 0 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_CustomerMetrics_DeviceId",

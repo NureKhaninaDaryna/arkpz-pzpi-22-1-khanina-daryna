@@ -76,15 +76,14 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "DeniMetrics API v1");
-        c.RoutePrefix = string.Empty; // Set Swagger at the root
-    });
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "DeniMetrics API v1");
+    c.RoutePrefix = string.Empty; // Set Swagger at the root
+});
+
+app.UseStaticFiles(); // Подключение статических файлов из папки wwwroot
 
 app.UseHttpsRedirection();
 

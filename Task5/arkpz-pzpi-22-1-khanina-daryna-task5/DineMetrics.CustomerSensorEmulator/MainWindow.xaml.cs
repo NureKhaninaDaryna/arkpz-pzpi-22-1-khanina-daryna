@@ -24,7 +24,7 @@ public partial class MainWindow : Window
 
     // Константи
     private const string CustomerMetricsUrl = "https://localhost:7239/CustomerMetrics";
-    private const string DeviceId = "83242380-277b-40d5-82a4-cfc5663d4994";
+    private const int DeviceId = 1;
     
     public MainWindow()
     {
