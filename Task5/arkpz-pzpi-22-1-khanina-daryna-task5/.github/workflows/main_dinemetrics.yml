@@ -22,10 +22,10 @@ jobs:
           dotnet-version: '8.x'
 
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build ../../arkpz-pzpi-22-1-khanina-daryna-task5/DeniMetrics.WebAPI --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
+        run: dotnet publish ../../arkpz-pzpi-22-1-khanina-daryna-task5/DeniMetrics.WebAPI -c Release -o ${{ runner.workspace }}/myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
