@@ -28,10 +28,14 @@ jobs:
       - name: Set up dependency caching for faster builds
         uses: actions/cache@v3
         with:
-          path: ~/.nuget/packages
+          path: |
+            ~/.nuget/packages
+            ~/.microsoft/aspnetcore
+            ~/.dotnet
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
+
 
       - name: Build with dotnet
         run: dotnet build ${{ env.AZURE_WEBAPP_PACKAGE_PATH }} --configuration Release
