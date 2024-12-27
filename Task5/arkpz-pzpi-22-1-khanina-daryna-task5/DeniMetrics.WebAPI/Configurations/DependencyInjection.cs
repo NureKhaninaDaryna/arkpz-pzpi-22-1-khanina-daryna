@@ -14,8 +14,9 @@ public static class DependencyInjection
         services.AddScoped<DbContext, AppDbContext>();
         
         services.AddDbContext<AppDbContext>(options =>
-        {
-            options.UseSqlServer("Server=tcp:dinemetrics.database.windows.net,1433;Initial Catalog=DineMetrics;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Authentication=Active Directory Interactive;");
+        { 
+            options.UseSqlServer("Server=tcp:dinemetrics.database.windows.net,1433;Initial Catalog=DineMetrics;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Authentication=\"Active Directory Default\";");
+            //options.UseSqlServer("Server=tcp:dinemetrics.database.windows.net,1433;Initial Catalog=DineMetrics;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Authentication=Active Directory Managed Identity;");
             options.UseLazyLoadingProxies();
         });
         

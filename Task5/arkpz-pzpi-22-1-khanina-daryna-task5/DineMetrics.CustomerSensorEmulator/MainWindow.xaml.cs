@@ -23,8 +23,8 @@ public partial class MainWindow : Window
     private readonly Random _random = new();
 
     // Константи
-    private const string CustomerMetricsUrl = "https://localhost:7239/CustomerMetrics";
-    private const int DeviceId = 1;
+    private const string CustomerMetricsUrl = "https://dinemetrics.azurewebsites.net/CustomerMetrics";
+    private const int DeviceId = 2;
     
     public MainWindow()
     {

@@ -14,9 +14,9 @@ public partial class MainWindow : Window
     private bool _isReading;
     private readonly Random _random = new();
     
-    private const string TemperatureMetricsUrl = "https://localhost:7239/TemperatureMetrics";
-    private static readonly string DeviceGetSecondsDelay = $"https://localhost:7239/Devices/{DeviceId}/delay";
-    private const int DeviceId = 1;
+    private const string TemperatureMetricsUrl = "https://dinemetrics.azurewebsites.net/TemperatureMetrics";
+    private static readonly string DeviceGetSecondsDelay = $"https://dinemetrics.azurewebsites.net/Devices/{DeviceId}/delay";
+    private const int DeviceId = 2;
     
     private int _secondsDelay = 5;
     
