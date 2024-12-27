@@ -52,12 +52,10 @@ jobs:
         with:
           name: .net-app
           
-      - name: Login to Azure
+      - name: Login to Azure using browser authentication
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID }}
+          auth-type: browser
           
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
